@@ -286,11 +286,13 @@ wsl -d Ubuntu -e /bin/true  # Should work
 |----------|---------------|-------------|--------|------------|
 | Both services running | WSLService | WSLXService | **OK** | Different names |
 | Both create NAT network | `{b95d0c5e-...}` | `{fork-guid}` | **OK** | Different GUIDs |
-| Both create VM | Owner=WSL | Owner=WSLX | **OK** | Different owners |
+| Both create VM | Owner=WSL | Owner=WSLX | **OK (UNCONFIRMED)** | Different owners; needs runtime proof |
 | Both port-forward :8080 | Binds port | Conflict | **CONFLICT** | User responsibility |
-| Both access `\\wsl.localhost` | Works | Works (sees own distros via fork registry) | **PARTIAL** | Explorer shows both shell folders |
+| Both access `\\wsl.localhost` | Works | **Cannot access** | **LIMITATION** | Fork uses SMB/VirtioFS (see Section 6) |
 | Both upgrade/install | MSI UpgradeCode | Fork UpgradeCode | **OK** | Independent packages |
 | Both register distros | `Lxss` registry | `WslX` registry | **OK** | Separate registry |
+
+**Note on `\\wsl.localhost`:** P9rdr.sys/P9np.dll are closed-source and hardcode the canonical CLSID. Fork distros registered under `WslX` registry will NOT appear in `\\wsl.localhost`. This is UNCONFIRMED pending runtime verification (see `UNC_RUNTIME_PROOF.md`).
 
 ---
 
@@ -366,15 +368,63 @@ Edit `msipackage/package.wix.in`:
 
 ### 7.4 WiX Custom Actions for MSIX
 
+**CRITICAL WARNING:** The "remove/deprovision" actions target the canonical `MicrosoftCorporationII.WindowsSubsystemForLinux` MSIX. Running these in SxS mode **will break canonical WSL**.
+
 | Custom Action | Line | Purpose | MVP v0 Action |
 |---------------|------|---------|---------------|
-| `InstallMsix` | 425-431 | Install glue MSIX as SYSTEM | **Skip** |
-| `InstallMsixAsUser` | 433-439 | Register for current user | **Skip** |
-| `InstallMsix.SetProperty` | 481 | Set database path | **Skip** |
-| `DeprovisionMsix` | 401-407 | Remove old canonical MSIX | **Keep** (cleanup) |
-| `RemoveMsixAsSystem` | 409-415 | Remove old MSIX | **Keep** (cleanup) |
-| `RemoveMsixAsUser` | 417-423 | Unregister for user | **Keep** (cleanup) |
-| `CleanMsixState` | 449-455 | Clean leftover state | **Keep** (cleanup) |
+| `InstallMsix` | 425-431 | Install glue MSIX as SYSTEM | **Skip** (SKIPMSIX=1) |
+| `InstallMsixAsUser` | 433-439 | Register for current user | **Skip** (SKIPMSIX=1) |
+| `InstallMsix.SetProperty` | 481 | Set database path | **Skip** (SKIPMSIX=1) |
+| `DeprovisionMsix` | 401-407 | Remove canonical MSIX | **DISABLE** (breaks canonical!) |
+| `RemoveMsixAsSystem` | 409-415 | Remove canonical MSIX | **DISABLE** (breaks canonical!) |
+| `RemoveMsixAsUser` | 417-423 | Unregister canonical MSIX | **DISABLE** (breaks canonical!) |
+| `CleanMsixState` | 449-455 | Clean shared state | **DISABLE** (may affect canonical) |
+
+### 7.5 Required WiX Modifications for SxS Safety
+
+**Edit `msipackage/package.wix.in`:**
+
+Add a new property for SxS mode:
+```xml
+<!-- Add near line 542 -->
+<Property Id="WSLX_SXS_MODE" Value="1" Secure="yes" />
+```
+
+Condition ALL MSIX actions to skip in SxS mode:
+```xml
+<!-- Line 500: Add SxS condition -->
+<Custom Action="DeprovisionMsix" After="BindImage"
+  Condition='((not INSTALLED) or (REMOVE~="ALL")) and (not UPGRADINGPRODUCTCODE) and (not SKIPMSIX = 1) and (not WSLX_SXS_MODE = 1)'/>
+
+<!-- Line 503-504: Add SxS condition -->
+<Custom Action="RemoveMsixAsUser" After="DeprovisionMsix"
+  Condition='((not INSTALLED) or (REMOVE~="ALL")) and (not UPGRADINGPRODUCTCODE) and (not SKIPMSIX = 1) and (not WSLX_SXS_MODE = 1)'/>
+<Custom Action="RemoveMsixAsSystem" After="RemoveMsixAsUser"
+  Condition='((not INSTALLED) or (REMOVE~="ALL")) and (not UPGRADINGPRODUCTCODE) and (not SKIPMSIX = 1) and (not WSLX_SXS_MODE = 1)'/>
+
+<!-- Line 507: Add SxS condition -->
+<Custom Action="CleanMsixState" After="RemoveMsixAsSystem"
+  Condition='((not INSTALLED) or (not REMOVE~="ALL")) and (not UPGRADINGPRODUCTCODE) and (not WSLX_SXS_MODE = 1)'/>
+```
+
+**Alternative: Hardcode SxS mode** (simpler for fork)
+
+In fork's `package.wix.in`, simply remove or comment out lines 500-507 entirely:
+```xml
+<!-- REMOVED FOR SXS FORK - DO NOT TOUCH CANONICAL MSIX
+<Custom Action="DeprovisionMsix" ... />
+<Custom Action="RemoveMsixAsUser" ... />
+<Custom Action="RemoveMsixAsSystem" ... />
+<Custom Action="CleanMsixState" ... />
+-->
+```
+
+### 7.6 SxS-Safe Install Command
+
+```powershell
+# MVP v0: Skip all MSIX operations
+msiexec /i wslx.msi SKIPMSIX=1 WSLX_SXS_MODE=1 /qn /l*v wslx_install.log
+```
 
 ### 7.5 Verification Procedure
 
@@ -431,6 +481,8 @@ PASS: No new AppX packages installed
 
 ## 8. SxS MVP v0 Checklist (MSI-Only)
 
+### Phase 1: Code Changes
+
 | # | Task | Status | Evidence |
 |---|------|--------|----------|
 | 1 | Generate new GUIDs (8 total) | [ ] | GUIDs in `fork_identity.h` |
@@ -441,13 +493,45 @@ PASS: No new AppX packages installed
 | 6 | Update `wslutil.h` VM owner | [ ] | Code diff |
 | 7 | Update `wslutil.cpp` named objects | [ ] | Mutex/pipe names |
 | 8 | Update `lxinitshared.h` HvSocket ports | [ ] | Code diff |
+
+### Phase 2: Build System Changes
+
+| # | Task | Status | Evidence |
+|---|------|--------|----------|
 | 9 | Update `package.wix.in` identities | [ ] | WiX diff |
-| 10 | ~~Update MSIX manifests~~ | N/A | **Skipped for MVP v0** |
-| 11 | Build MSI with `cmake --build . --target msi` | [ ] | MSI file exists |
-| 12 | Install with `SKIPMSIX=1` | [ ] | Install log |
-| 13 | Verify no new AppX packages | [ ] | Before/after CSV |
-| 14 | Run acceptance tests 1-7 | [ ] | Test outputs |
-| 15 | Document issues | [ ] | Issue list |
+| 10 | **Disable MSIX cleanup actions** (Section 7.5) | [ ] | WiX diff shows lines 500-507 conditioned/removed |
+| 11 | **Build forked client** (`wslx.exe`) | [ ] | Binary exists |
+| 12 | ~~Update MSIX manifests~~ | N/A | **Skipped for MVP v0** |
+
+### Phase 3: Build & Install
+
+| # | Task | Status | Evidence |
+|---|------|--------|----------|
+| 13 | Build MSI: `cmake --build . --target msi` | [ ] | MSI file exists |
+| 14 | Install: `msiexec /i wslx.msi SKIPMSIX=1 WSLX_SXS_MODE=1` | [ ] | Install log |
+
+### Phase 4: Verification Gates
+
+| # | Gate | Status | Evidence |
+|---|------|--------|----------|
+| 15 | **Gate A: Canonical still works** | [ ] | `wsl --status`, `wsl -d Ubuntu -e /bin/true` |
+| 16 | **Gate B: Two services, two CLSIDs** | [ ] | `sc query`, `reg query HKCR\CLSID\{...}` |
+| 17 | **Gate C: Concurrent VMs** | [ ] | `hcsdiag list`, `hnsdiag list networks` |
+| 18 | Verify no new AppX packages | [ ] | Before/after CSV |
+| 19 | Run acceptance tests 1-7 | [ ] | Test outputs |
+| 20 | Document issues | [ ] | Issue list |
+
+### Critical: Forked Client Requirement
+
+The fork **must** include `wslx.exe` (or equivalent) because:
+- COM IID change makes canonical `wsl.exe` incompatible with fork service
+- MSIX execution aliases are skipped in MVP v0
+- Users need a way to invoke the fork
+
+**Options:**
+1. **Rename binary in CMakeLists.txt** (recommended)
+2. Create wrapper script that activates fork COM object
+3. Document direct COM invocation (PowerShell/C++)
 
 ---
 
