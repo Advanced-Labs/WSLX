@@ -1,5 +1,12 @@
 # WSL Codebase Analysis Report: Replace-Mode and SxS Readiness
 
+**Status:** AUDITED - See `EVIDENCE_PACK.md` for primary code evidence
+**Date:** 2026-01-28
+
+## Related Documents
+- `EVIDENCE_PACK.md` - Detailed code pointers and runtime verification commands
+- `SXS_MVP_PLAN.md` - Concrete implementation plan with acceptance tests
+
 ## 1. Executive Summary (15 bullets)
 
 1. **Build Process**: CMake-based build generates `wsl.msi` or MSIX package; deployment via `tools/deploy/deploy-to-host.ps1` or MSI install
@@ -83,28 +90,31 @@
 
 ## 3. Singleton Inventory Table
 
-| # | Singleton Name | Type | Where Defined | How Used | Parameterization Strategy |
-|---|----------------|------|---------------|----------|---------------------------|
-| **1** | `WSLService` | Service Name | `msipackage/package.wix.in:218` | Windows service identity | Compile-time: change ServiceInstall Name |
-| **2** | `{a9b7a1b9-0671-405c-95f1-e0612cb4ce7e}` | COM CLSID | `msipackage/package.wix.in:152` | LxssUserSession class | Compile-time: new GUID in package.wix.in + IDL |
-| **3** | `{370121D2-AA7E-4608-A86D-0BBAB9DA1A60}` | COM AppID | `msipackage/package.wix.in:143` | Service hosting identity | Compile-time: new GUID |
-| **4** | `{38541BDC-F54F-4CEB-85D0-37F0F3D2617E}` | COM Interface | `msipackage/package.wix.in:127` | ILxssUserSession interface | Compile-time: new GUID in IDL |
-| **5** | `{4EA0C6DD-E9FF-48E7-994E-13A31D10DC60}` | ProxyStub CLSID | `msipackage/package.wix.in:130` | COM marshaling | Compile-time: new GUID |
-| **6** | `SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss` | Registry Path | `src/windows/common/registry.hpp:17` | Machine-wide config storage | Compile-time constant |
-| **7** | `SYSTEM\CurrentControlSet\Services\LxssManager` | Registry Path | `src/windows/common/registry.hpp:17` | Legacy LXSS settings | Compile-time constant |
-| **8** | `{b95d0c5e-57d4-412b-b571-18a81a16e005}` | HNS Network ID | `test/windows/NetworkTests.cpp:1654` | NAT Network (legacy) | Compile-time constant in networking code |
-| **9** | `{790e58b4-7939-4434-9358-89ae7ddbe87e}` | HNS Network ID | `test/windows/NetworkTests.cpp:1658` | NAT Network (with firewall) | Compile-time constant |
-| **10** | `WSL` | VM Owner | `src/windows/common/wslutil.h:47` | HCS compute system ownership | Compile-time: `c_vmOwner` |
-| **11** | `\\wsl.localhost` | UNC Path | `msipackage/package.wix.in:81,96` | Plan9 filesystem access | CANNOT change (p9rdr.sys hardcoded) |
-| **12** | `\\wsl$` | UNC Path | `msipackage/package.wix.in:101` | Legacy Plan9 path | CANNOT change (p9rdr.sys hardcoded) |
-| **13** | `{B2B4A4D1-2754-4140-A2EB-9A76D9D7CDC6}` | Shell Folder CLSID | `msipackage/package.wix.in:53` | Explorer "Linux" folder | Compile-time: new GUID |
-| **14** | `C:\Program Files\WSL` | Install Path | `msipackage/package.wix.in:7` | Binary installation | CMake/WiX: INSTALLDIR |
-| **15** | `6D5B792B-1EDC-4DE9-8EAD-201B820F8E82` | MSI UpgradeCode | `msipackage/package.wix.in:2` | Package upgrade identity | Compile-time: new UpgradeCode for fork |
-| **16** | `50000-50005` | HvSocket Ports | `src/shared/inc/lxinitshared.h:115-120` | VM-host communication | Compile-time constants |
-| **17** | `MicrosoftCorporationII.WindowsSubsystemForLinux_8wekyb3d8bbwe` | Package Family | `src/windows/common/wslutil.h:43` | MSIX identity | Packaging: AppxManifest.in |
-| **18** | `wsl.exe` | Binary Name | `src/windows/inc/wsl.h:17` | CLI entry point | Compile-time + install rename |
-| **19** | `WslInstaller` | Service Name | `src/windows/wslinstaller/exe/ServiceMain.cpp:22` | Installer service | Compile-time constant |
-| **20** | `lxss` | Inbox Service | `src/windows/common/helpers.cpp:488` | WSL1 (cannot change) | CANNOT change (Windows component) |
+**Legend:** PROVEN = Primary code evidence found | UNCONFIRMED = External/inbox dependency
+
+| # | Singleton Name | Type | Where Defined | Status | Parameterization Strategy |
+|---|----------------|------|---------------|--------|---------------------------|
+| **1** | `WSLService` | Service Name | `ServiceMain.cpp:50`, `package.wix.in:218` | **PROVEN** | Compile-time constant |
+| **2** | `{a9b7a1b9-...}` | COM CLSID | `wslservice.idl:157`, `package.wix.in:152` | **PROVEN** | New GUID in IDL + WiX |
+| **3** | `{370121D2-...}` | COM AppID | `package.wix.in:143` | **PROVEN** | New GUID in WiX |
+| **4** | `{38541BDC-...}` | COM Interface | `wslservice.idl:165`, `package.wix.in:127` | **PROVEN** | New GUID in IDL + WiX |
+| **5** | `{4EA0C6DD-...}` | ProxyStub CLSID | `package.wix.in:134` | **PROVEN** | New GUID in WiX |
+| **6** | `Lxss` registry | Registry Path | `wslservice.idl:145`, `package.wix.in:44` | **PROVEN** | Compile-time constant |
+| **7** | `{b95d0c5e-...}` | HNS Network ID | `WslCoreConfig.cpp:498` | **PROVEN** | Compile-time constant |
+| **8** | `{790e58b4-...}` | HNS Network ID | `WslCoreConfig.cpp:501` | **PROVEN** | Compile-time constant |
+| **9** | `"WSL"` network names | HNS Network Name | `WslCoreConfig.cpp:508-509` | **PROVEN** | Compile-time constant |
+| **10** | `WSL` | VM Owner | `wslutil.h:47`, `WslCoreVm.cpp:1395` | **PROVEN** | Compile-time: `c_vmOwner` |
+| **11** | `\\wsl.localhost` | UNC Path | `package.wix.in:81,96` | **UNCONFIRMED** | CANNOT change (p9rdr.sys) |
+| **12** | `\\wsl$` | UNC Path | `package.wix.in:101` | **UNCONFIRMED** | CANNOT change (p9rdr.sys) |
+| **13** | `{B2B4A4D1-...}` | Shell Folder CLSID | `package.wix.in:53` | **PROVEN** | New GUID in WiX |
+| **14** | `C:\Program Files\WSL` | Install Path | `package.wix.in:7` | **PROVEN** | WiX INSTALLDIR |
+| **15** | `{6D5B792B-...}` | MSI UpgradeCode | `package.wix.in:2` | **PROVEN** | New UpgradeCode |
+| **16** | `50000-50005` | HvSocket Ports | `lxinitshared.h:115-120` | **PROVEN** | Compile-time constants |
+| **17** | `MicrosoftCorporationII...` | MSIX Identity | `AppxManifest.in:15` | **PROVEN** | Package identity |
+| **18** | `wsl.exe` | Binary Name | WiX files | **PROVEN** | File rename |
+| **19** | `WslInstaller` | Service Name | `wslinstaller/ServiceMain.cpp:22` | **PROVEN** | Compile-time constant |
+| **20** | `lxss` / `lxssmanager` | Inbox Service | `wslservice.idl:20` | **UNCONFIRMED** | CANNOT change (WSL1 inbox) |
+| **21** | `P9NP` / `p9rdr.sys` | Network Provider | `collect-wsl-logs.ps1:125` | **UNCONFIRMED** | CANNOT change (Windows inbox) |
 
 ---
 
