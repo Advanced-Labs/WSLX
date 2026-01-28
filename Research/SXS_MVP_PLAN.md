@@ -308,39 +308,163 @@ wsl -d Ubuntu -e /bin/true  # Should work
 
 ---
 
-## 7. SxS MVP Checklist
+## 7. MSI-Only MVP v0 (No MSIX)
 
-| # | Task | Status |
-|---|------|--------|
-| 1 | Generate new GUIDs for all COM identities | [ ] |
-| 2 | Create `fork_identity.h` with all constants | [ ] |
-| 3 | Update `ServiceMain.cpp` service name | [ ] |
-| 4 | Update `wslservice.idl` COM identities | [ ] |
-| 5 | Update `WslCoreConfig.cpp` HNS network IDs | [ ] |
-| 6 | Update `wslutil.h` VM owner | [ ] |
-| 7 | Update `lxinitshared.h` HvSocket ports | [ ] |
-| 8 | Update `package.wix.in` all identities | [ ] |
-| 9 | Update MSIX manifests | [ ] |
-| 10 | Build and test MSI installation | [ ] |
-| 11 | Run acceptance tests 1-7 | [ ] |
-| 12 | Document any issues found | [ ] |
+### 7.1 Rationale
+
+For MVP v0, we explicitly exclude MSIX packaging to:
+- Avoid certificate signing complexity
+- Avoid package family name collisions
+- Avoid execution alias conflicts (`bash.exe`, `wsl.exe`, `wslconfig.exe`)
+- Reduce identity surfaces to manage
+
+### 7.2 Glue MSIX Analysis
+
+**What the glue MSIX provides** (`msixgluepackage/AppxManifest.in`):
+
+| Feature | WiX Line | Impact if Skipped |
+|---------|----------|-------------------|
+| Execution alias: `bash.exe` | AppxManifest.in:47 | Users invoke `wslx.exe` directly |
+| Execution alias: `wsl.exe` | AppxManifest.in:48 | No conflict with canonical |
+| Execution alias: `wslconfig.exe` | AppxManifest.in:49 | Users invoke `wslxconfig.exe` directly |
+| COM AppExtension entry point | AppxManifest.in:52-63 | MSI registers COM separately |
+
+**Conclusion:** Glue MSIX provides convenience aliases only. MSI handles all critical COM registration.
+
+### 7.3 How to Disable Glue MSIX Installation
+
+**Option A: Use SKIPMSIX property (recommended)**
+
+```powershell
+# Install fork MSI without glue MSIX
+msiexec /i wslx.msi SKIPMSIX=1
+```
+
+**Evidence:** WiX conditions check `SKIPMSIX` property:
+```xml
+<!-- package.wix.in:521-523 -->
+<Custom Action="InstallMsix.SetProperty" ... Condition='... and (not SKIPMSIX = 1)' />
+<Custom Action="InstallMsix" ... Condition='... and (not SKIPMSIX = 1)' />
+<Custom Action="InstallMsixAsUser" ... Condition='... and (not SKIPMSIX = 1)' />
+```
+
+**Option B: Remove from WiX template (permanent)**
+
+Edit `msipackage/package.wix.in`:
+
+```xml
+<!-- REMOVE or comment out these lines -->
+<!-- Line 383: Remove embedded MSIX binary -->
+<!-- <Binary Id="msixpackage" SourceFile="${PACKAGE_INPUT_DIR}/gluepackage.msix"/> -->
+
+<!-- Lines 425-439: Remove or condition custom actions -->
+<!-- Comment out InstallMsix, InstallMsixAsUser custom actions -->
+
+<!-- Lines 521-523: Remove scheduling -->
+<!-- Comment out InstallMsix sequence entries -->
+```
+
+### 7.4 WiX Custom Actions for MSIX
+
+| Custom Action | Line | Purpose | MVP v0 Action |
+|---------------|------|---------|---------------|
+| `InstallMsix` | 425-431 | Install glue MSIX as SYSTEM | **Skip** |
+| `InstallMsixAsUser` | 433-439 | Register for current user | **Skip** |
+| `InstallMsix.SetProperty` | 481 | Set database path | **Skip** |
+| `DeprovisionMsix` | 401-407 | Remove old canonical MSIX | **Keep** (cleanup) |
+| `RemoveMsixAsSystem` | 409-415 | Remove old MSIX | **Keep** (cleanup) |
+| `RemoveMsixAsUser` | 417-423 | Unregister for user | **Keep** (cleanup) |
+| `CleanMsixState` | 449-455 | Clean leftover state | **Keep** (cleanup) |
+
+### 7.5 Verification Procedure
+
+**Before installation:**
+```powershell
+# Capture current AppX packages
+$before = Get-AppxPackage *WindowsSubsystemForLinux* | Select-Object Name, Version, PackageFullName
+$before | Export-Csv -Path "appx_before.csv" -NoTypeInformation
+Write-Host "Packages before:" -ForegroundColor Cyan
+$before | Format-Table
+```
+
+**Install fork MSI:**
+```powershell
+msiexec /i "C:\path\to\wslx.msi" SKIPMSIX=1 /qn /l*v wslx_install.log
+```
+
+**After installation:**
+```powershell
+# Capture AppX packages after
+$after = Get-AppxPackage *WindowsSubsystemForLinux* | Select-Object Name, Version, PackageFullName
+$after | Export-Csv -Path "appx_after.csv" -NoTypeInformation
+Write-Host "Packages after:" -ForegroundColor Cyan
+$after | Format-Table
+
+# Diff check
+$newPackages = Compare-Object $before $after -Property PackageFullName -PassThru |
+    Where-Object { $_.SideIndicator -eq '=>' }
+
+if ($newPackages) {
+    Write-Host "FAIL: New AppX packages installed:" -ForegroundColor Red
+    $newPackages | Format-Table
+} else {
+    Write-Host "PASS: No new AppX packages installed" -ForegroundColor Green
+}
+```
+
+**Expected output:**
+```
+Packages before:
+Name                                           Version        PackageFullName
+----                                           -------        ---------------
+MicrosoftCorporationII.WindowsSubsystemForLinux 2.x.x.x       MicrosoftCorporationII...
+
+Packages after:
+Name                                           Version        PackageFullName
+----                                           -------        ---------------
+MicrosoftCorporationII.WindowsSubsystemForLinux 2.x.x.x       MicrosoftCorporationII...
+
+PASS: No new AppX packages installed
+```
 
 ---
 
-## 8. Estimated Effort
+## 8. SxS MVP v0 Checklist (MSI-Only)
+
+| # | Task | Status | Evidence |
+|---|------|--------|----------|
+| 1 | Generate new GUIDs (8 total) | [ ] | GUIDs in `fork_identity.h` |
+| 2 | Create `fork_identity.h` | [ ] | File exists |
+| 3 | Update `ServiceMain.cpp` service name | [ ] | Code diff |
+| 4 | Update `wslservice.idl` COM identities | [ ] | Code diff |
+| 5 | Update `WslCoreConfig.cpp` HNS network IDs | [ ] | Code diff |
+| 6 | Update `wslutil.h` VM owner | [ ] | Code diff |
+| 7 | Update `wslutil.cpp` named objects | [ ] | Mutex/pipe names |
+| 8 | Update `lxinitshared.h` HvSocket ports | [ ] | Code diff |
+| 9 | Update `package.wix.in` identities | [ ] | WiX diff |
+| 10 | ~~Update MSIX manifests~~ | N/A | **Skipped for MVP v0** |
+| 11 | Build MSI with `cmake --build . --target msi` | [ ] | MSI file exists |
+| 12 | Install with `SKIPMSIX=1` | [ ] | Install log |
+| 13 | Verify no new AppX packages | [ ] | Before/after CSV |
+| 14 | Run acceptance tests 1-7 | [ ] | Test outputs |
+| 15 | Document issues | [ ] | Issue list |
+
+---
+
+## 9. Estimated Effort (MVP v0 MSI-Only)
 
 | Phase | Effort |
 |-------|--------|
 | GUID Generation | 1 hour |
-| Source Code Changes | 4-8 hours |
-| MSI/MSIX Changes | 4-8 hours |
+| Source Code Changes | 4-6 hours |
+| MSI Changes (no MSIX) | 2-4 hours |
 | Build Testing | 2-4 hours |
 | Acceptance Testing | 4-8 hours |
-| **Total** | **15-30 hours** |
+| **Total** | **13-23 hours** |
 
 ---
 
-## 9. Risk Assessment
+## 10. Risk Assessment (MVP v0)
 
 | Risk | Impact | Likelihood | Mitigation |
 |------|--------|------------|------------|
@@ -348,4 +472,20 @@ wsl -d Ubuntu -e /bin/true  # Should work
 | HNS network collision | Medium | Low | Unique GUIDs |
 | Registry conflict | Medium | Low | Separate registry tree |
 | Binary name conflicts | Low | Medium | Rename all binaries |
-| MSIX signing | Medium | Medium | Create dev certificate |
+| ~~MSIX signing~~ | N/A | N/A | **Not applicable for MVP v0** |
+| HCS concurrent VM conflict | Medium | Low | Runtime verification needed |
+
+---
+
+## 11. Post-MVP v0: MSIX Integration (Future)
+
+When ready to add MSIX support:
+
+1. Create dev signing certificate
+2. Update `msixgluepackage/AppxManifest.in`:
+   - Identity Name: `YourPublisher.WSLX`
+   - Update execution aliases to `wslx.exe`, `wslxconfig.exe`
+3. Update CLSID reference in AppExtension (line 59)
+4. Remove `SKIPMSIX=1` from install command
+5. Sign package with dev certificate
+6. Test alias registration doesn't conflict with canonical

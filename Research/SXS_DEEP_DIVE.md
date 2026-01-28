@@ -126,25 +126,31 @@ This means:
 
 **Label:** `UNCONFIRMED - needs runtime verification`
 
-### Runtime Verification Commands
+**Full verification procedure:** See `Research/UNC_RUNTIME_PROOF.md`
+
+### Quick Runtime Verification Commands
 
 ```powershell
-# Test 1: Verify P9np.dll COM activation
-# Run Process Monitor, filter for:
-#   - Operation: RegOpenKey
-#   - Path contains: CLSID
-#   - Process: explorer.exe
-# Navigate to \\wsl.localhost and observe which CLSID is queried
+# Test 1: Binary search for hardcoded CLSID in P9np.dll
+$dll = "$env:SystemRoot\System32\P9np.dll"
+$bytes = [System.IO.File]::ReadAllBytes($dll)
+$text = [System.Text.Encoding]::Unicode.GetString($bytes)
+if ($text -match "a9b7a1b9-0671-405c-95f1-e0612cb4ce7e") {
+    Write-Host "CONFIRMED: Canonical CLSID hardcoded in P9np.dll" -ForegroundColor Red
+}
 
-# Test 2: Check if registry path is hardcoded in P9np.dll
-$dll = "C:\Windows\System32\P9np.dll"
-Select-String -Path $dll -Pattern "Lxss" -Encoding byte
-# If "Lxss" appears in binary, the registry path is hardcoded
+# Test 2: ProcMon capture during \\wsl.localhost access
+# Filter: Path contains "HKCR\CLSID\{a9b7a1b9"
+# Trigger: cmd /c "dir \\wsl.localhost\"
+# Observe: Which process queries the CLSID
 
-# Test 3: Trace COM activation
-# Using WPR/WPA or comtrace, observe:
-# - Which CLSID is activated when accessing \\wsl.localhost
-# - Which service receives the call
+# Test 3: Check UNC prefix in P9rdr.sys
+$sys = "$env:SystemRoot\System32\drivers\P9rdr.sys"
+$bytes = [System.IO.File]::ReadAllBytes($sys)
+$text = [System.Text.Encoding]::Unicode.GetString($bytes)
+if ($text -match "wsl\.localhost") {
+    Write-Host "CONFIRMED: UNC prefix hardcoded in P9rdr.sys" -ForegroundColor Yellow
+}
 ```
 
 ### Workaround for Fork
@@ -357,13 +363,19 @@ _stopEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
 | 1 | P9np.dll CLSID binding | Hardcoded to canonical CLSID | ProcMon during `\\wsl.localhost` access |
 | 2 | P9rdr.sys UNC handling | Tied to `wsl.localhost`/`wsl$` prefixes | Cannot change without driver |
 
-### PROVEN by design (Windows behavior)
+### PROVEN by code, UNCONFIRMED by runtime
 
-| # | Item | Explanation |
-|---|------|-------------|
-| 1 | Service name case insensitivity | Windows services are case-insensitive |
-| 2 | COM interface versioning | IID change = interface incompatibility |
-| 3 | HCS Owner isolation | HCS uses Owner string for VM grouping |
+| # | Item | Code Evidence | Runtime Verification |
+|---|------|---------------|----------------------|
+| 1 | HCS Owner isolation | `wslutil.h:47` | See `CONCURRENT_VM_PROOF.md` |
+| 2 | HNS Network GUID isolation | `WslCoreConfig.cpp:498-509` | `hnsdiag list networks` |
+
+### PROVEN by design (Windows architecture behavior)
+
+| # | Item | Explanation | Needs Runtime? |
+|---|------|-------------|----------------|
+| 1 | Service name case insensitivity | Windows services are case-insensitive | No |
+| 2 | COM interface versioning | IID change = interface incompatibility | No |
 
 ---
 
@@ -450,4 +462,25 @@ HvSocket ports: `50000-50005` → `51000-51005`
 
 ---
 
-*Document complete. All claims labeled with evidence source.*
+## 11. Runtime Verification Documents
+
+The following documents contain detailed procedures for runtime verification:
+
+| Document | Purpose | Status |
+|----------|---------|--------|
+| `Research/UNC_RUNTIME_PROOF.md` | Prove UNC enumeration CLSID binding | **Pending execution** |
+| `Research/CONCURRENT_VM_PROOF.md` | Prove HCS Owner isolation works | **Pending execution** |
+| `Research/SXS_MVP_PLAN.md` Section 7 | MSI-only MVP with SKIPMSIX=1 | **Documented** |
+
+### Evidence Label Legend
+
+| Label | Meaning | Action Required |
+|-------|---------|-----------------|
+| `PROVEN by runtime` | Has actual runtime logs/outputs | None (verified) |
+| `PROVEN by code` | Has file:line evidence only | Run verification procedure |
+| `PROVEN by design` | Windows architecture guarantees | None (fundamental behavior) |
+| `UNCONFIRMED` | Hypothesis only | Must run verification before relying on it |
+
+---
+
+*Document updated 2026-01-28. Claims without runtime evidence labeled accordingly.*
