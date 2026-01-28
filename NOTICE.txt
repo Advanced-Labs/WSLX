@@ -1,0 +1,971 @@
+NOTICES AND INFORMATION
+Do Not Translate or Localize
+
+This software incorporates material from third parties.
+Microsoft makes certain open source code available at https://3rdpartysource.microsoft.com,
+or you may send a check or money order for US $5.00, including the product name,
+the open source component name, platform, and version number, to:
+
+Source Code Compliance Team
+Microsoft Corporation
+One Microsoft Way
+Redmond, WA 98052
+USA
+
+Notwithstanding any other terms, you may reverse engineer this software to the extent
+required to debug changes to any libraries licensed under the GNU Lesser General Public License.
+
+---------------------------------------------------------
+
+llvm/llvm-project d32170dbd5b0d54436537b6b75beaf44324e0c28 - Apache-2.0 WITH LLVM-exception
+
+
+(c) (tm)
+(c) Value A
+(c) auto AS
+(c) Value Sd
+(c) auto AST
+(c) CXType PT
+(c) Type I1Ty
+(c) Value RHS
+(c) X1 ... X1
+(c) Type I32Ty
+(c) Value Elt0
+Copyright 2014
+(c) Type Int8Ty
+(c) Type V8x8Ty
+(c) Value FMSub
+(c) unsigned AS
+(c) Constant One
+(c) Type FloatTy
+(c) Type Int16Ty
+(c) Type Int32Ty
+(c) Type Int64Ty
+(c) Value AllocA
+(c) Value Alloca
+Alloc1 a1 (c) R1
+Alloc1 a2 (c) R1
+(c) FileID MainID
+(c) Lower C Upper
+(c) Stmt NumExprs
+(c) Type DoubleTy
+(c) Type I32PtrTy
+(c) Value AllocaA
+Coproc, Opc1, CRm
+(c) ConstantInt C2
+(c) EUR CHECK-NEXT
+(c) Scale 1 Offset
+(c) State UNQUOTED
+(c) Type IndexType
+Copyright (c) 2012
+Copyright (c) 2013
+Copyright (c) 2019
+Exprs new (c) Stmt
+(c) ExprResult NewE
+(c) Metadata Ops MD
+(c) SelectInst SelI
+(c) SmallVector MDs
+(c) TransferBatch B
+(c) Type Int32PtrTy
+(c) Type Int64PtrTy
+(c) BasicBlock Entry
+(c) CXXRecordDecl CD
+(c) FunctionType FTy
+(c) Offset C- Offset
+Copyright 2010 INRIA
+Copyright 2011 INRIA
+Copyright 2012 INRIA
+Copyright 2014 INRIA
+Copyright 2015 INRIA
+Copyright 2016 INRIA
+(c) FunctionType FnTy
+(c) QualType ResultTy
+(c) SourceRange Range
+AsmToks new (c) Token
+SubExprs new (c) Stmt
+(c) 2008 Red Hat, Inc.
+(c) 2011 Anthony Green
+(c) BasicBlock EntryBB
+(c) FunctionType FFnTy
+(c) FunctionType IFnTy
+(c) SourceLocation Loc
+Condition (c) Branches
+Context (c) LineToUnit
+Copyright (c) 2013 IBM
+(c) ErrMsg Stream Error
+(c) SmallVector NewVars
+(c) SmallVector ToErase
+Bbb kind copyright' Bbb
+(c) Constant PosDivisorC
+CommonPtr new (c) Common
+Copyright (c) 2012 CHECK
+(c) CharUnits AlignedSize
+(c) Constant NullV2I32Ptr
+(c) Constant PosDividendC
+Copyright 2010-2011 INRIA
+Copyright 2014-2015 INRIA
+COPYRIGHT,v 1.3 2003/06/02
+Coproc, Opc1, Rt, Rt2, CRm
+Copyright 2003 Google Inc.
+Copyright 2008 Google Inc.
+Copyright 2009 Google Inc.
+Copyright 2015 Google Inc.
+Copyright 2018 Google Inc.
+Copyright The LLVM project
+coprime. APInt A HugePrime
+copyrighted by the author.
+(c) IdentifierInfo NumExprs
+(c) VectorType Int8PtrVecTy
+(c) Willem van Schaik, 1999
+Copyright (c) 1997, Phillip
+Copyright 2005, Google Inc.
+Copyright 2006, Google Inc.
+Copyright 2007, Google Inc.
+Copyright 2008, Google Inc.
+Copyright 2012 Google, Inc.
+Copyright 2013, Google Inc.
+Copyright 2015, Google Inc.
+InitCache (c) TransferBatch
+copyright u'2015, LLVM Team
+Copyright 2006, Dean Edwards
+(c) CHECK-NEXT 194 CHECK-NEXT
+(c) CXXBaseSpecifier NumBases
+(c) Designator NumDesignators
+(c) StringLiteral NumClobbers
+Constraints new (c) StringRef
+Copyright (c) 2002 Bo Thorsen
+Copyright (c) 2010 Apple Inc.
+Copyright (c) by P.J. Plauger
+Copyright 2010 Zencoder, Inc.
+Copyright 2017 Roman Lebedev.
+ParamInfo new (c) ParmVarDecl
+Copyright (c) 2000 Software AG
+Copyright (c) 2002 Roger Sayle
+Copyright (c) 2008 David Daney
+Copyright (c) 2009 Google Inc.
+Copyright (c) 2016 Aaron Watry
+Copyright (c) 2017 Google Inc.
+Copyright (c) 2018 Jim Ingham.
+Copyright 2009 The Go Authors.
+Copyright 2010 The Go Authors.
+Copyright 2011 The Go Authors.
+Copyright 2012 The Go Authors.
+Copyright 2013 The Go Authors.
+Copyright 2014 The Go Authors.
+Copyright 2015 The Go Authors.
+(c) (3) educational corporation
+(c) CHECK-NEXT foo() CHECK-NEXT
+(copr0) ConstantDataVector CDV1
+(copr1) ConstantDataVector CDV2
+Copyright (c) 1994 X Consortium
+Copyright (c) 2008 Matteo Frigo
+Copyright (c) 2009 Matteo Frigo
+Copyright (c) 2010 CodeSourcery
+Copyright (c) 2011 Kyle Moffett
+Copyright (c) 2011 Tilera Corp.
+Copyright (c) 2011 Timothy Wall
+Copyright (c) 2012 Peter Harris
+Copyright (c) 2012 Tilera Corp.
+Copyright 2008-2010 Apple, Inc.
+Copyright 2015 Sven Verdoolaege
+Copyright 2016 Sven Verdoolaege
+Copyright 2017 Sven Verdoolaege
+Copyright 2018 Sven Verdoolaege
+Copyright, License, and Patents
+Other Coprocessor Instructions.
+(c) StringLiteral NumConstraints
+Copyright (c) 1996 Red Hat, Inc.
+Copyright (c) 2002 Ranjit Mathew
+Copyright (c) 2004 Anthony Green
+Copyright (c) 2004 Simon Posnjak
+Copyright (c) 2008 Anthony Green
+Copyright (c) 2008 Red Hat, Inc.
+Copyright (c) 2011 Anthony Green
+Copyright (c) 2012 Anthony Green
+Copyright (c) 2014 Red Hat, Inc.
+Copyright 2011 Sven Verdoolaege.
+(c) foo() pragma omp target teams
+Copyright (c) 1992 Henry Spencer.
+Copyright (c) 2000 John Hornkvist
+Copyright (c) 2001 John Hornkvist
+Copyright (c) 2006 Kirill Simonov
+Copyright (c) 2012 Alan Hourihane
+Copyright 2001-2004 Unicode, Inc.
+copyright u'2003- d, LLVM Project
+copyright u'2011- d, LLVM Project
+(c) CyclesSaved + LocalCyclesSaved
+Copyright (c) 1999-2007 Apple Inc.
+Copyright (c) 2009 The Go Authors.
+Copyright (c) 2009-2019 Polly Team
+Copyright (c) 2012 Thorsten Glaser
+Copyright (c) 2013 Tensilica, Inc.
+Copyright 2012 Universiteit Leiden
+Copyright 2016-2017 Tobias Grosser
+copyright u'2007- d, The LLDB Team
+copyright u'2013- d, Analyzer Team
+Constraint new (c) AtomicConstraint
+Copyright (c) 1998 Cygnus Solutions
+Copyright (c) 1998 Geoffrey Keating
+Copyright (c) 2001 David E. O'Brien
+Copyright (c) 2013 Mentor Graphics.
+Copyright (c) 2015the LLVM Project.
+Copyright 2009-2010 The Go Authors.
+copyright u'2007- d, The Clang Team
+copyright u'2010- d, The Polly Team
+copyright u'2011-2018, LLVM Project
+Copyright (C ) Microsoft Corporation
+Copyright (c) 2000, 2007 Software AG
+Copyright (c) 2001 Alexander Peslyak
+Copyright (c) 2012, 2013 Xilinx, Inc
+Copyright (c) 2014, 2015 Google Inc.
+Copyright (c) 2019 The MLIR Authors.
+Copyright (c) Microsoft Corporation.
+Copyright 2009, 2010 The Go Authors.
+Copyright 2015-2016 Sven Verdoolaege
+Copyright 2016, 2017 Tobias Grosser.
+Copyright 2016-2017 Sven Verdoolaege
+(c) PointerType InitPtrType InitValue
+Copyright (c) 1996-2003 Red Hat, Inc.
+Copyright (c) 1996-2004 Red Hat, Inc.
+Copyright (c) 1999-2003 Steve Purcell
+Copyright (c) 2012-2016, Yann Collet.
+Copyright 2011,2015 Sven Verdoolaege.
+Copyright (c) 1996, 1998 Red Hat, Inc.
+Copyright (c) 1998, 2008 Red Hat, Inc.
+Copyright (c) 1999, 2008 Red Hat, Inc.
+Copyright (c) 2004 Renesas Technology.
+Copyright (c) 2008 Christian Haggstrom
+Copyright (c) 2008, 2010 Red Hat, Inc.
+Copyright (c) 2011, 2012 Anthony Green
+Copyright (c) 2011, 2013 Anthony Green
+Copyright (c) 2011, 2014 Anthony Green
+Copyright (c) 2012, 2013 Anthony Green
+Copyright (c) 2012, 2014 Anthony Green
+Copyright 2007-2010 by the Sphinx team
+(c) 2006 Free Software Foundation, Inc.
+(c) CHECK-NEXT T break CHECK-NEXT Preds
+Copyright (c) 1998, 2012 Andreas Schwab
+Copyright (c) 2002-2004 Tim J. Robbins.
+Copyright (c) 2005 Free Standards Group
+Copyright 2005-2007 Universiteit Leiden
+Copyright 2006-2007 Universiteit Leiden
+Copyright 2012 Ecole Normale Superieure
+Copyright 2013 Ecole Normale Superieure
+Copyright 2014 Ecole Normale Superieure
+Copyright 2016 Ismael Jimenez Martinez.
+Portions Copyright 2009 The Go Authors.
+in LLVM, Diploma Thesis, (c) April 2011
+(c) StringRef NumClobbers // FIXME Avoid
+Copyright (c) 1996-1998 John D. Polstra.
+Copyright (c) 2002-2008, 2012 Kaz Kojima
+Copyright (c) 1997-2019 Intel Corporation
+Copyright (c) 2005 Axis Communications AB
+Copyright (c) 2010-2015 Benjamin Peterson
+Copyright 1992, 1993, 1994 Henry Spencer.
+coproc_option_imm Operand let PrintMethod
+(c) CXXCtorInitializer NumIvarInitializers
+Copyright (c) 2000 Hewlett Packard Company
+Copyright (c) 2002 Bo Thorsen <bo@suse.de>
+Copyright (c) 1996-2003, 2010 Red Hat, Inc.
+Copyright (c) 2004 eXtensible Systems, Inc.
+Copyright (c) 2009-2014 by the contributors
+Copyright (c) 2009-2015 by the contributors
+Copyright (c) 2009-2016 by the contributors
+Copyright (c) 2009-2019 by the contributors
+Copyright (c) 2011 Free Software Foundation
+Copyright (c) 2011-2014 by the contributors
+Copyright (c) 2011-2019 by the contributors
+Copyright (c) 2013 Imagination Technologies
+Copyright (c) 2017-2019 by the contributors
+(c) CHECK-NEXT Preds (1) B4 CHECK-NEXT Succs
+(c) CHECK-NEXT Preds (1) B5 CHECK-NEXT Succs
+(c) CHECK-NEXT Preds (1) B7 CHECK-NEXT Succs
+CoprocNumAsmOperand AsmOperandClass let Name
+CoprocRegAsmOperand AsmOperandClass let Name
+Copyright (c) 1993 by Sun Microsystems, Inc.
+Copyright (c) 1996, 1998, 2005 Red Hat, Inc.
+Copyright (c) 1996, 1998, 2007 Red Hat, Inc.
+Copyright (c) 1998, 2008, 2011 Red Hat, Inc.
+Copyright (c) 1999, 2007, 2008 Red Hat, Inc.
+Copyright (c) 2004 by Sun Microsystems, Inc.
+Copyright (c) 2007, 2009, 2010 Red Hat, Inc.
+Copyright (c) 2011, 2012, 2013 Anthony Green
+Copyright 2012,2014 Ecole Normale Superieure
+Copyright 2012-2013 Ecole Normale Superieure
+Copyright 2012-2014 Ecole Normale Superieure
+Copyright 2013-2014 Ecole Normale Superieure
+Copyright (c) 1992, 1993, 1994 Henry Spencer.
+Copyright (c) 2002-2007 Michael J. Fromberger
+Copyright (c) 2009, 2010, 2011, 2012 ARM Ltd.
+Copyright (c) 2012, 2013 Anthony Green Target
+Copyright 2000 Free Software Foundation, Inc.
+Copyright 2004 Free Software Foundation, Inc.
+Copyright (c) 2008 Ryan McCabe <ryan@numb.org>
+(c) 2003-2004 Randolph Chung <tausq@debian.org>
+CoprocOptionAsmOperand AsmOperandClass let Name
+Copyright (c) 2003, 2004, 2006, 2008 Kaz Kojima
+Copyright (c) 2014 Advanced Micro Devices, Inc.
+Copyright (c) 2015 Advanced Micro Devices, Inc.
+Copyright (c) 1994-1999 Lucent Technologies Inc.
+Copyright (c) 2002, 2007 Bo Thorsen <bo@suse.de>
+Copyright (c) 2013 Imagination Technologies Ltd.
+(c) Designator NumDesigs NumDesignators NumDesigs
+Copyright (c) 1992, 1993 UNIX International, Inc.
+Copyright (c) 1996-2003, 2007, 2008 Red Hat, Inc.
+Copyright (c) 2004 Free Software Foundation, Inc.
+Copyright (c) 2006 Free Software Foundation, Inc.
+Copyright (c) 2007 Free Software Foundation, Inc.
+Copyright (c) 2008 Free Software Foundation, Inc.
+Copyright (c) 2009 Free Software Foundation, Inc.
+Copyright (c) 2011 Free Software Foundation, Inc.
+Copyright (c) 2012 Free Software Foundation, Inc.
+Copyright (c) 2012, Noah Spurrier <noah@noah.org>
+Copyright (c) 2013-2014, Pexpect development team
+Copyright (c) 2013-2016, Pexpect development team
+Copyright (c) 2014 Free Software Foundation, Inc.
+Copyright (c) 2015 Paul Norman <penorman@mac.com>
+Copyright (c) 2016 Aaron Watry <awatry@gmail.com>
+Copyright extcopyright~ he year the LLVM Project.
+(c) CHECK-NEXT Preds (3) B3 B4 B2 CHECK-NEXT Succs
+(c) CHECK-NEXT Preds (3) B3 B5 B6 CHECK-NEXT Succs
+Copyright (c) 1996, 2007, 2008, 2011 Red Hat, Inc.
+Copyright (c) 1998, 2001, 2007, 2008 Red Hat, Inc.
+Copyright (c) 1998, 2007, 2008, 2012 Red Hat, Inc.
+Copyright (c) 2000, 2003, 2004, 2008 Red Hat, Inc.
+Copyright (c) 2003-2010 Python Software Foundation
+Copyright (c) 2012 Zack Weinberg <zackw@panix.com>
+Copyright 1992-2018 Free Software Foundation, Inc.
+Copyright 2008-2009 Katholieke Universiteit Leuven
+(c) Stmt NumExprs std::copy Exprs, Exprs + NumExprs
+Copyright (c) 1996, MPEG Software Simulation Group.
+Copyright (c) 2003 Jakub Jelinek <jakub@redhat.com>
+Copyright (c) 2008 Guido U. Draheim <guidod@gmx.de>
+Copyright (c) 2008 Stepan Kasal <skasal@redhat.com>
+Copyright (c) 2011 Plausible Labs Cooperative, Inc.
+Copyright (c) 2012 Qualcomm Innovation Center, Inc.
+Copyright (c) 2008 Benjamin Kosnik <bkoz@redhat.com>
+Copyright (c) 2013 Synopsys, Inc. (www.synopsys.com)
+Copyright (c) 2013 Synposys, Inc. (www.synopsys.com)
+Copyright (c) 2014,2015 Advanced Micro Devices, Inc.
+Copyright (c) 2002, 2003, 2004, 2006, 2008 Kaz Kojima
+Copyright (c) 2003, 2004, 2006, 2007, 2012 Kaz Kojima
+Copyright (c) 2013 Miodrag Vallat. <miod@openbsd.org>
+Copyright (c) 2014, 2015 Advanced Micro Devices, Inc.
+Copyright (c) 2016 Krzesimir Nowak <qdlacz@gmail.com>
+Copyright (c) 1994-2014 Free Software Foundation, Inc.
+Copyright (c) 1994-2017 Free Software Foundation, Inc.
+Copyright (c) 1996, 2003-2004, 2007-2008 Red Hat, Inc.
+Copyright (c) 1996-2014 Free Software Foundation, Inc.
+Copyright (c) 1996-2015 Free Software Foundation, Inc.
+Copyright (c) 1996-2017 Free Software Foundation, Inc.
+Copyright (c) 1997-2014 Free Software Foundation, Inc.
+Copyright (c) 1997-2017 Free Software Foundation, Inc.
+Copyright (c) 1999-2013 Free Software Foundation, Inc.
+Copyright (c) 1999-2014 Free Software Foundation, Inc.
+Copyright (c) 1999-2017 Free Software Foundation, Inc.
+Copyright (c) 2001-2014 Free Software Foundation, Inc.
+Copyright (c) 2001-2017 Free Software Foundation, Inc.
+Copyright (c) 2002-2014 Free Software Foundation, Inc.
+Copyright (c) 2002-2017 Free Software Foundation, Inc.
+Copyright (c) 2003-2014 Free Software Foundation, Inc.
+Copyright (c) 2003-2017 Free Software Foundation, Inc.
+Copyright (c) 2004-2014 Free Software Foundation, Inc.
+Copyright (c) 2004-2015 Free Software Foundation, Inc.
+Copyright (c) 2004-2017 Free Software Foundation, Inc.
+Copyright (c) 2006-2014 Free Software Foundation, Inc.
+Copyright (c) 2006-2017 Free Software Foundation, Inc.
+Copyright (c) 2007, 2008 Free Software Foundation, Inc
+Copyright (c) 2008 Sven Verdoolaege <skimo@kotnet.org>
+Copyright (c) 2009-2014 Free Software Foundation, Inc.
+Copyright (c) 2009-2017 Free Software Foundation, Inc.
+Copyright (c) 2010-2015 Free Software Foundation, Inc.
+Copyright (c) 2010-2017 Free Software Foundation, Inc.
+Copyright (c) 2011-2013 Free Software Foundation, Inc.
+Copyright (c) 2011-2014 Free Software Foundation, Inc.
+Copyright (c) 2012-2014 Free Software Foundation, Inc.
+Copyright (c) 2012-2015 Free Software Foundation, Inc.
+Copyright (c) 2013-2014 Free Software Foundation, Inc.
+Copyright (c) 2013-2015 Free Software Foundation, Inc.
+Copyright (c) 2002, 2009 Free Software Foundation, Inc.
+Copyright (c) 2004, 2005 Free Software Foundation, Inc.
+Copyright (c) 2004, 2010 Free Software Foundation, Inc.
+Copyright (c) 2006, 2008 Free Software Foundation, Inc.
+Copyright (c) 2008, 2010 Free Software Foundation, Inc.
+Copyright (c) 2014 Sebastian Macke <sebastian@macke.de>
+Copyright (c) 2015 Moritz Klammler <moritz@klammler.eu>
+Copyright (c) 1996, 1997, 2003, 2004, 2008 Red Hat, Inc.
+Copyright (c) 1998, 2001, 2007, 2008, 2011, 2014 Red Hat
+Copyright (c) 2009 Bradley Smith <brad@brad-smith.co.uk>
+Copyright (c) 2013 Jesse Towner <jessetowner@lavabit.com>
+Copyright (c) 2013 Roy Stogner <roystgnr@ices.utexas.edu>
+(c) Type AtExitFuncArgs VoidStar FunctionType AtExitFuncTy
+copyright (c) 1991-2011, Thomas G. Lane, Guido Vollbeding.
+(c) GlobalVariable Handle new GlobalVariable M, DsoHandleTy
+(c) Type ArgTys Int32Ty, Int32Ty, Int32Ty FunctionType FnTy
+Copyright (c) 2004 Scott James Remnant <scott@netsplit.com>
+Copyright (c) 2008 Steven G. Johnson <stevenj@alum.mit.edu>
+Copyright (c) 2009 Steven G. Johnson <stevenj@alum.mit.edu>
+Copyright (c) 2004, 2011-2015 Free Software Foundation, Inc.
+Copyright (c) 2007, 2008, 2010 Free Software Foundation, Inc
+Copyright (c) 2007, 2009, 2010 Free Software Foundation, Inc
+Copyright (c) 2013 Victor Oliveira <victormatheus@gmail.com>
+Copyright 1984, 1987, 1989, 1992, 2000 by Stephen L. Moshier
+(c) DeclRefExpr DR M.makeDeclRefExpr(PV) ImplicitCastExpr ICE
+(c) IdentifierInfo NumExprs std::copy Names, Names + NumExprs
+Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
+Copyright (c) 2001, 2003, 2005 Free Software Foundation, Inc.
+Copyright (c) 2002, 2003, 2009 Free Software Foundation, Inc.
+Copyright (c) 2004, 2005, 2012 Free Software Foundation, Inc.
+Copyright (c) 2006, 2008, 2010 Free Software Foundation, Inc.
+(c) BranchInst BI BranchInst::Create(Exit, Exit, False, Entry)
+Copyright (c) 1996, 1998, 1999, 2001, 2007, 2008 Red Hat, Inc.
+Copyright (c) 1996, 1998, 2001, 2002, 2003, 2005 Red Hat, Inc.
+Copyright (c) 1996, 1998, 2005, 2007, 2009, 2010 Red Hat, Inc.
+Copyright (c) 1996,1998,2001-2003,2005,2008,2010 Red Hat, Inc.
+Copyright (c) 1994 The Regents of the University of California.
+Copyright (c) 1996-2014 Anthony Green, Red Hat, Inc and others.
+Copyright (c) 1992-1996, 1998-2012 Free Software Foundation, Inc.
+Copyright (c) 1996-2001, 2003-2015 Free Software Foundation, Inc.
+Copyright (c) 2001, 2003, 2005, 2008 Free Software Foundation, Inc.
+Copyright (c) 2001, 2003, 2005, 2011 Free Software Foundation, Inc.
+Copyright (c) 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+Copyright (c) 2003-2019 University of Illinois at Urbana-Champaign.
+Copyright (c) 2004, 2005, 2007, 2008 Free Software Foundation, Inc.
+Copyright (c) 2004, 2005, 2007, 2009 Free Software Foundation, Inc.
+Copyright (c) 2007-2018 University of Illinois at Urbana-Champaign.
+Copyright (c) 2007-2019 University of Illinois at Urbana-Champaign.
+Copyright (c) 2002, 2003, 2004, 2010, Free Software Foundation, Inc.
+Copyright (c) 2006-2009 Steven J. Bethard <steven.bethard@gmail.com>
+Copyright (c) 1992, 1993 The Regents of the University of California.
+(c) StringLiteral NumClobbers std::copy Clobbers, Clobbers + NumClobbers
+Copyright (c) 2000-2007 Vita Nuova Holdings Limited (www.vitanuova.com).
+Copyright (c) 2001, 2002, 2003, 2005, 2008 Free Software Foundation, Inc.
+Copyright (c) 2001, 2002, 2003, 2005, 2009 Free Software Foundation, Inc.
+Copyright (c) 2001, 2003, 2004, 2005, 2006 Free Software Foundation, Inc.
+Copyright (c) 2001, 2003, 2005, 2008, 2011 Free Software Foundation, Inc.
+Copyright (c) 2002, 2006, 2007, 2009, 2010 Free Software Foundation, Inc.
+Copyright (c) 2003, 2004, 2005, 2006, 2011 Free Software Foundation, Inc.
+Copyright (c) 2004, 2005, 2007, 2008, 2009 Free Software Foundation, Inc.
+Copyright (c) 1992, 1993, 1994 The Regents of the University of California.
+Copyright (c) 2004-2005, 2007-2008, 2011-2015 Free Software Foundation, Inc.
+Copyright (c) 2004-2005, 2007-2009, 2011-2015 Free Software Foundation, Inc.
+Copyright (c) 2004-2005, 2007, 2009, 2011-2015 Free Software Foundation, Inc.
+Copyright (c) 2012 Alexandre K. I. de Mendonca <alexandre.keunecke@gmail.com>
+Copyright (c) 2001, 2002, 2003, 2005, 2008, 2010 Free Software Foundation, Inc.
+Copyright (c) 2002, 2003, 2005, 2006, 2007, 2008 Free Software Foundation, Inc.
+(c) StringLiteral NumConstraints std::copy Constraints, Constraints + NumConstraints
+Copyright (c) 1996, 1997, 2000, 2001, 2003, 2005, 2008 Free Software Foundation, Inc.
+Copyright (c) 1999, 2000, 2001, 2003, 2004, 2005, 2008 Free Software Foundation, Inc.
+Copyright (c) 2002, 2003, 2005, 2006, 2007, 2008, 2011 Free Software Foundation, Inc.
+Copyright (c) 1995, 1996, 1997, 2003, 2004, 2005, 2007, 2009 Free Software Foundation, Inc.
+Copyright (c) 1997, 1999, 2000, 2001, 2003, 2004, 2005, 2008 Free Software Foundation, Inc.
+Copyright (c) 1997, 2000, 2001, 2003, 2004, 2005, 2006, 2008 Free Software Foundation, Inc.
+Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2008 Free Software Foundation, Inc.
+Copyright (c) 1996, 1998, 2000, 2001, 2002, 2003, 2004, 2005, 2008 Free Software Foundation, Inc.
+Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2009 Free Software Foundation, Inc.
+Copyright (c) 1996, 1998, 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2011 Free Software Foundation, Inc.
+Copyright (c) 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2009, 2010, 2011 Free Software Foundation, Inc.
+Copyright (c) 1999, 2000, 2003, 2004, 2005, 2006, 2007, 2009, 2010, 2011, 2012 Free Software Foundation, Inc.
+Copyright (c) 2012 Alexandre K. I. de Mendonca <alexandre.keunecke@gmail.com> , Paulo Pizarro <paulo.pizarro@gmail.com>
+Copyright (c) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2008, 2009 Free Software Foundation, Inc.
+Copyright (c) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+Copyright (c) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+Copyright (c) 1996, 1997, 1999, 2000, 2002, 2003, 2004, 2005, 2006, 2008, 2009, 2010, 2011, 2012 Free Software Foundation, Inc.
+Copyright (c) 1996, 1997, 1998, 1999, 2000, 2001, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Free Software Foundation, Inc.
+Copyright (c) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+Copyright (c) 1995, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2010, 2011, 2014 Free Software Foundation, Inc.
+Copyright (c) 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Free Software Foundation, Inc.
+Copyright (c) 1992, 1993, 1994, 1995, 1996, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009 Free Software Foundation, Inc.
+Copyright (c) 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Free Software Foundation, Inc.
+Copyright (c) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Free Software Foundation, Inc.
+Copyright (c) 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012 Free Software Foundation, Inc.
+
+Apache-2.0 WITH LLVM-exception
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+CommunityToolkit.Mvvm 8.4.0 - MIT
+
+
+Copyright (c) 2021 Sergio Pedri
+Copyright (c) 2020 Michael Dietrich
+Copyright (c) Microsoft Corporation
+(c) .NET Foundation and Contributors
+Copyright (c) 2009 - 2018 Laurent Bugnion
+Copyright (c) .NET Foundation and Contributors
+Copyright (c) 2017 Pedro Lamas, http://www.pedrolamas.com
+
+# .NET Community Toolkit
+
+Copyright © .NET Foundation and Contributors
+
+All rights reserved.
+
+## MIT License (MIT)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+CommunityToolkit.WinUI.Animations 8.2.250402 - MIT
+
+
+(c) .NET Foundation and Contributors
+Copyright (c) .NET Foundation and Contributors
+
+# Windows Community Toolkit
+
+Copyright © .NET Foundation and Contributors
+
+All rights reserved.
+
+## MIT License (MIT)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+CommunityToolkit.WinUI.Controls.SettingsControls 8.2.250402 - MIT
+
+
+(c) .NET Foundation and Contributors
+Copyright (c) .NET Foundation and Contributors
+
+# Windows Community Toolkit
+
+Copyright © .NET Foundation and Contributors
+
+All rights reserved.
+
+## MIT License (MIT)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the “Software”), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED *AS IS*, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+Microsoft.Extensions.Hosting 10.0.0 - MIT
+
+
+Copyright (c) 2021
+Copyright (c) Six Labors
+(c) Microsoft Corporation
+Copyright (c) 2022 FormatJS
+Copyright (c) Andrew Arnott
+Copyright 2019 LLVM Project
+Copyright (c) 1998 Microsoft
+Copyright 2018 Daniel Lemire
+Copyright (c) .NET Foundation
+Copyright (c) 2011, Google Inc.
+Copyright (c) 2020 Dan Shechter
+(c) 1997-2005 Sean Eron Anderson
+Copyright (c) 2015 Andrew Gallant
+Copyright (c) 2022, Wojciech Mula
+Copyright (c) 2017 Yoshifumi Kawai
+Copyright (c) 2022, Geoff Langdale
+Copyright (c) 2005-2020 Rich Felker
+Copyright (c) 2012-2021 Yann Collet
+Copyright (c) Microsoft Corporation
+Copyright (c) 2007 James Newton-King
+Copyright (c) 1991-2024 Unicode, Inc.
+Copyright (c) 2013-2017, Alfred Klomp
+Copyright (c) 2018 Nemanja Mijailovic
+Copyright 2012 the V8 project authors
+Copyright (c) 1999 Lucent Technologies
+Copyright (c) 2008-2016, Wojciech Mula
+Copyright (c) 2011-2020 Microsoft Corp
+Copyright (c) 2015-2017, Wojciech Mula
+Copyright (c) 2015-2018, Wojciech Mula
+Copyright (c) 2005-2007, Nick Galbreath
+Copyright (c) 2015 The Chromium Authors
+Copyright (c) 2018 Alexander Chermyanin
+Copyright (c) The Internet Society 1997
+Copyright (c) 2004-2006 Intel Corporation
+Copyright (c) 2011-2015 Intel Corporation
+Copyright (c) 2013-2017, Milosz Krajewski
+Copyright (c) 2016-2017, Matthieu Darbois
+Copyright (c) The Internet Society (2003)
+Copyright (c) .NET Foundation Contributors
+(c) 1995-2024 Jean-loup Gailly and Mark Adler
+Copyright (c) 2020 Mara Bos <m-ou.se@m-ou.se>
+Copyright (c) 2012 - present, Victor Zverovich
+Copyright (c) 2006 Jb Evain (jbevain@gmail.com)
+Copyright (c) 2008-2020 Advanced Micro Devices, Inc.
+Copyright (c) 2019 Microsoft Corporation, Daan Leijen
+Copyright (c) 2011 Novell, Inc (http://www.novell.com)
+Copyright (c) 2015 Xamarin, Inc (http://www.xamarin.com)
+Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors
+Copyright (c) 2014 Ryan Juckett http://www.ryanjuckett.com
+Copyright (c) 1990- 1993, 1996 Open Software Foundation, Inc.
+Portions (c) International Organization for Standardization 1986
+Copyright (c) YEAR W3C(r) (MIT, ERCIM, Keio, Beihang) Disclaimers
+Copyright (c) 2015 THL A29 Limited, a Tencent company, and Milo Yip
+Copyright (c) 1980, 1986, 1993 The Regents of the University of California
+Copyright 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 The Regents of the University of California
+Copyright (c) 1989 by Hewlett-Packard Company, Palo Alto, Ca. & Digital Equipment Corporation, Maynard, Mass
+
+MIT License
+
+Copyright (c) <year> <copyright holders>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+Microsoft.NETCore.App.Runtime.win-arm64 10.0.0 - MIT
+
+
+Copyright (c) 2021
+Copyright (c) Six Labors
+(c) Microsoft Corporation
+Copyright (c) 2022 FormatJS
+Copyright (c) Andrew Arnott
+Copyright 2019 LLVM Project
+Copyright (c) 1998 Microsoft
+Copyright 2018 Daniel Lemire
+Copyright (c) .NET Foundation
+Copyright 1995-2022 Mark Adler
+Copyright 1995-2024 Mark Adler
+Copyright (c) 2011, Google Inc.
+Copyright (c) 2020 Dan Shechter
+(c) 1997-2005 Sean Eron Anderson
+Copyright (c) 2015 Andrew Gallant
+Copyright (c) 2022, Wojciech Mula
+Copyright (c) 2017 Yoshifumi Kawai
+Copyright (c) 2022, Geoff Langdale
+Copyright (c) 2005-2020 Rich Felker
+Copyright (c) 2012-2021 Yann Collet
+Copyright (c) Microsoft Corporation
+Copyright (c) 2007 James Newton-King
+Copyright (c) 1991-2024 Unicode, Inc.
+Copyright (c) 2013-2017, Alfred Klomp
+Copyright (c) 2018 Nemanja Mijailovic
+Copyright 2012 the V8 project authors
+Copyright (c) 1999 Lucent Technologies
+Copyright (c) 2008-2016, Wojciech Mula
+Copyright (c) 2011-2020 Microsoft Corp
+Copyright (c) 2015-2017, Wojciech Mula
+Copyright (c) 2015-2018, Wojciech Mula
+Copyright (c) 2005-2007, Nick Galbreath
+Copyright (c) 2015 The Chromium Authors
+Copyright (c) 2018 Alexander Chermyanin
+Copyright (c) The Internet Society 1997
+Copyright (c) 2004-2006 Intel Corporation
+Copyright (c) 2011-2015 Intel Corporation
+Copyright (c) 2013-2017, Milosz Krajewski
+Copyright (c) 2016-2017, Matthieu Darbois
+Copyright (c) The Internet Society (2003)
+Copyright (c) .NET Foundation Contributors
+(c) 1995-2024 Jean-loup Gailly and Mark Adler
+Copyright (c) 2020 Mara Bos <m-ou.se@m-ou.se>
+Copyright (c) .NET Foundation and Contributors
+Copyright (c) 2012 - present, Victor Zverovich
+Copyright (c) 2006 Jb Evain (jbevain@gmail.com)
+Copyright (c) 2008-2020 Advanced Micro Devices, Inc.
+Copyright (c) 2019 Microsoft Corporation, Daan Leijen
+Copyright (c) 2011 Novell, Inc (http://www.novell.com)
+Copyright (c) 2015 Xamarin, Inc (http://www.xamarin.com)
+Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors
+Copyright (c) 2014 Ryan Juckett http://www.ryanjuckett.com
+Copyright 1995-2024 Jean-loup Gailly and Mark Adler Qkkbal
+Copyright (c) 1990- 1993, 1996 Open Software Foundation, Inc.
+Portions (c) International Organization for Standardization 1986
+Copyright (c) YEAR W3C(r) (MIT, ERCIM, Keio, Beihang) Disclaimers
+Copyright (c) 2015 THL A29 Limited, a Tencent company, and Milo Yip
+Copyright (c) 1980, 1986, 1993 The Regents of the University of California
+Copyright 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 The Regents of the University of California
+Copyright (c) 1989 by Hewlett-Packard Company, Palo Alto, Ca. & Digital Equipment Corporation, Maynard, Mass
+
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+Microsoft.NETCore.App.Runtime.win-x64 10.0.0 - MIT
+
+
+Copyright (c) 2021
+Copyright (c) Six Labors
+(c) Microsoft Corporation
+Copyright (c) 2022 FormatJS
+Copyright (c) Andrew Arnott
+Copyright 2019 LLVM Project
+Copyright (c) 1998 Microsoft
+Copyright 2018 Daniel Lemire
+Copyright (c) .NET Foundation
+Copyright 1995-2022 Mark Adler
+Copyright 1995-2024 Mark Adler
+Copyright (c) 2011, Google Inc.
+Copyright (c) 2020 Dan Shechter
+(c) 1997-2005 Sean Eron Anderson
+Copyright (c) 2015 Andrew Gallant
+Copyright (c) 2022, Wojciech Mula
+Copyright (c) 2017 Yoshifumi Kawai
+Copyright (c) 2022, Geoff Langdale
+Copyright (c) 2005-2020 Rich Felker
+Copyright (c) 2012-2021 Yann Collet
+Copyright (c) Microsoft Corporation
+Copyright (c) 2007 James Newton-King
+Copyright (c) 1991-2024 Unicode, Inc.
+Copyright (c) 2013-2017, Alfred Klomp
+Copyright (c) 2018 Nemanja Mijailovic
+Copyright 2012 the V8 project authors
+Copyright (c) 1999 Lucent Technologies
+Copyright (c) 2008-2016, Wojciech Mula
+Copyright (c) 2011-2020 Microsoft Corp
+Copyright (c) 2015-2017, Wojciech Mula
+Copyright (c) 2015-2018, Wojciech Mula
+Copyright (c) 2005-2007, Nick Galbreath
+Copyright (c) 2015 The Chromium Authors
+Copyright (c) 2018 Alexander Chermyanin
+Copyright (c) The Internet Society 1997
+Copyright (c) 2004-2006 Intel Corporation
+Copyright (c) 2011-2015 Intel Corporation
+Copyright (c) 2013-2017, Milosz Krajewski
+Copyright (c) 2016-2017, Matthieu Darbois
+Copyright (c) The Internet Society (2003)
+Copyright (c) .NET Foundation Contributors
+(c) 1995-2024 Jean-loup Gailly and Mark Adler
+Copyright (c) 2020 Mara Bos <m-ou.se@m-ou.se>
+Copyright (c) .NET Foundation and Contributors
+Copyright (c) 2012 - present, Victor Zverovich
+Copyright (c) 2006 Jb Evain (jbevain@gmail.com)
+Copyright (c) 2008-2020 Advanced Micro Devices, Inc.
+Copyright (c) 2019 Microsoft Corporation, Daan Leijen
+Copyright (c) 2011 Novell, Inc (http://www.novell.com)
+Copyright (c) 2015 Xamarin, Inc (http://www.xamarin.com)
+Copyright (c) 2009, 2010, 2013-2016 by the Brotli Authors
+Copyright (c) 2014 Ryan Juckett http://www.ryanjuckett.com
+Copyright 1995-2024 Jean-loup Gailly and Mark Adler Qkkbal
+Copyright (c) 1990- 1993, 1996 Open Software Foundation, Inc.
+Portions (c) International Organization for Standardization 1986
+Copyright (c) YEAR W3C(r) (MIT, ERCIM, Keio, Beihang) Disclaimers
+Copyright (c) 2015 THL A29 Limited, a Tencent company, and Milo Yip
+Copyright (c) 1980, 1986, 1993 The Regents of the University of California
+Copyright 2011, 2012, 2013, 2014, 2015, 2016, 2017, 2018 The Regents of the University of California
+Copyright (c) 1989 by Hewlett-Packard Company, Palo Alto, Ca. & Digital Equipment Corporation, Maynard, Mass
+
+The MIT License (MIT)
+
+Copyright (c) .NET Foundation and Contributors
+
+All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+Microsoft.Xaml.Behaviors.WinUI.Managed 3.0.0 - MIT
+
+
+(c) Microsoft Corporation
+
+MIT License
+
+Copyright (c) <year> <copyright holders>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+microsoft/gsl 0f6dbc9e2915ef5c16830f3fa3565738de2a9230 - MIT
+
+
+Copyright 2008, Google Inc.
+Copyright (c) 2015 Microsoft Corporation.
+
+Copyright (c) 2015 Microsoft Corporation. All rights reserved. 
+ 
+This code is licensed under the MIT License (MIT). 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy 
+of this software and associated documentation files (the "Software"), to deal 
+in the Software without restriction, including without limitation the rights 
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies 
+of the Software, and to permit persons to whom the Software is furnished to do 
+so, subject to the following conditions: 
+
+The above copyright notice and this permission notice shall be included in all 
+copies or substantial portions of the Software. 
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR 
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, 
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE 
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER 
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, 
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN 
+THE SOFTWARE. 
+
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+vswhere 3.1.7 - MIT
+
+
+(c) 2023 GitHub, Inc.
+(c) Microsoft Corporation
+Copyright (c) by P.J. Plauger
+Copyright (c) Microsoft Corporation
+
+MIT License
+
+Copyright (c) <year> <copyright holders>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+WinUIEx 2.9.0 - MIT
+
+
+Copyright (c) Microsoft Corporation
+Copyright 2021-2025 - Morten Nielsen
+Copyright 2021-2025 - Morten Nielsen A
+Copyright (c) 2021-2025 - Morten Nielsen
+
+MIT License
+
+Copyright (c) <year> <copyright holders>
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+---------------------------------------------------------
+
+---------------------------------------------------------
+
+wix 5.0.2 - MS-RL
+
+
+Copyright James Newton-King 2008
+Copyright UpdateUrl DisableModify
+Copyright (c) Microsoft Corporation
+(c) .NET Foundation and contributors
+Copyright James Newton-King 2008 Json.NET
+Copyright AssemblyDescription AssemblyProduct
+Copyright (c) .NET Foundation and contributors
+
+Microsoft Reciprocal License (Ms-RL)
+
+This license governs use of the accompanying software. If you use the software, you accept this license. If you do not accept the license, do not use the software.
+
+   1. Definitions
+
+   The terms "reproduce," "reproduction," "derivative works," and "distribution" have the same meaning here as under U.S. copyright law.
+
+   A "contribution" is the original software, or any additions or changes to the software.
+
+   A "contributor" is any person that distributes its contribution under this license.
+
+   "Licensed patents" are a contributor's patent claims that read directly on its contribution.
+
+   2. Grant of Rights
+
+      (A) Copyright Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free copyright license to reproduce its contribution, prepare derivative works of its contribution, and distribute its contribution or any derivative works that you create.
+
+      (B) Patent Grant- Subject to the terms of this license, including the license conditions and limitations in section 3, each contributor grants you a non-exclusive, worldwide, royalty-free license under its licensed patents to make, have made, use, sell, offer for sale, import, and/or otherwise dispose of its contribution in the software or derivative works of the contribution in the software.
+
+   3. Conditions and Limitations
+
+      (A) Reciprocal Grants- For any file you distribute that contains code from the software (in source code or binary format), you must provide recipients the source code to that file along with a copy of this license, which license will govern that file. You may license other files that are entirely your own work and do not contain code from the software under any terms you choose.
+
+      (B) No Trademark License- This license does not grant you rights to use any contributors' name, logo, or trademarks.
+
+      (C) If you bring a patent claim against any contributor over patents that you claim are infringed by the software, your patent license from such contributor to the software ends automatically.
+
+      (D) If you distribute any portion of the software, you must retain all copyright, patent, trademark, and attribution notices that are present in the software.
+
+      (E) If you distribute any portion of the software in source code form, you may do so only under this license by including a complete copy of this license with your distribution. If you distribute any portion of the software in compiled or object code form, you may only do so under a license that complies with this license.
+
+      (F) The software is licensed "as-is." You bear the risk of using it. The contributors give no express warranties, guarantees, or conditions. You may have additional consumer rights under your local laws which this license cannot change. To the extent permitted under your local laws, the contributors exclude the implied warranties of merchantability, fitness for a particular purpose and non-infringement.
+
+---------------------------------------------------------
+
