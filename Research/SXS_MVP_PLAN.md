@@ -288,7 +288,7 @@ wsl -d Ubuntu -e /bin/true  # Should work
 | Both create NAT network | `{b95d0c5e-...}` | `{fork-guid}` | **OK** | Different GUIDs |
 | Both create VM | Owner=WSL | Owner=WSLX | **OK (UNCONFIRMED)** | Different owners; needs runtime proof |
 | Both port-forward :8080 | Binds port | Conflict | **CONFLICT** | User responsibility |
-| Both access `\\wsl.localhost` | Works | **Cannot access** | **LIMITATION** | Fork uses SMB/VirtioFS (see Section 6) |
+| Both access `\\wsl.localhost` | Works, sees canonical distros | Accessible but enumerates canonical only; fork distros not visible | **LIMITATION** | Fork uses SMB/VirtioFS (see Section 6) |
 | Both upgrade/install | MSI UpgradeCode | Fork UpgradeCode | **OK** | Independent packages |
 | Both register distros | `Lxss` registry | `WslX` registry | **OK** | Separate registry |
 
