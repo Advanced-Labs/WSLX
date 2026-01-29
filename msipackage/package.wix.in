@@ -1,10 +1,11 @@
+<!-- WSLX Fork: Updated identities for SxS operation -->
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
-    <Package Name="Windows Subsystem for Linux" Language="1033" InstallerVersion="500" Version="${PACKAGE_VERSION}" Manufacturer="Microsoft Corporation" UpgradeCode="6D5B792B-1EDC-4DE9-8EAD-201B820F8E82" Scope="perMachine" Compressed="${COMPRESS_PACKAGE}">
+    <Package Name="WSLX" Language="1033" InstallerVersion="500" Version="${PACKAGE_VERSION}" Manufacturer="WSLX Contributors" UpgradeCode="ABB3B349-A099-4615-97BA-7F1B0729EA5C" Scope="perMachine" Compressed="${COMPRESS_PACKAGE}">
         <MajorUpgrade AllowDowngrades="yes"  Disallow="no"  />
         <MediaTemplate EmbedCab="yes" />
 
         <StandardDirectory Id="ProgramFiles64Folder">
-            <Directory Id="INSTALLDIR" Name="WSL">
+            <Directory Id="INSTALLDIR" Name="WSLX">
                 <Directory Id="TOOLSFOLDER" Name="tools" />
                 <Directory Id="LIBFOLDER" Name="lib" />
                 <?if "${WSL_BUILD_WSL_SETTINGS}" = "true" ?>
@@ -18,10 +19,10 @@
 
         <DirectoryRef Id="INSTALLDIR">
             <Component Id="wsl" Guid="F0C8D6BA-1502-41E7-BF72-D93DFA134730" UninstallWhenSuperseded="yes" DisableRegistryReflection="yes" Bitness="always64">
-                <RemoveFile Id="CleanUpWSLShortCut" Directory="ProgramMenuFolder" Name="WSL" On="uninstall"/>
-                <File Id="wsl.exe" Name="wsl.exe" Source="${PACKAGE_INPUT_DIR}/wsl.exe" KeyPath="yes">
-                    <Shortcut Id="WSLShortcut" Name="WSL" Description="Windows Subsystem for Linux" Arguments="--cd ~" Advertise="yes" Directory="ProgramMenuFolder" Icon="wsl.ico">
-                        <ShortcutProperty Key="System.AppUserModel.ID" Value="Microsoft.WSL"/>
+                <RemoveFile Id="CleanUpWSLShortCut" Directory="ProgramMenuFolder" Name="WSLX" On="uninstall"/>
+                <File Id="wslx.exe" Name="wslx.exe" Source="${PACKAGE_INPUT_DIR}/wslx.exe" KeyPath="yes">
+                    <Shortcut Id="WSLXShortcut" Name="WSLX" Description="WSLX Fork - Windows Subsystem for Linux" Arguments="--cd ~" Advertise="yes" Directory="ProgramMenuFolder" Icon="wsl.ico">
+                        <ShortcutProperty Key="System.AppUserModel.ID" Value="WSLX.WSLX"/>
                         <ShortcutProperty Key="System.AppUserModel.ToastActivatorCLSID" Value="{2B9C59C3-98F1-45C8-B87B-12AE3C7927E8}"/>
                     </Shortcut>
                 </File>
@@ -40,8 +41,8 @@
                 <File Id="system.vhd" Source="${WSLG_SOURCE_DIR}/${TARGET_PLATFORM}/system.vhd"/>
                 <?endif?>
 
-                <!-- Installation folder -->
-                <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\Lxss\MSI">
+                <!-- Installation folder (WSLX Fork: Using WslX registry path) -->
+                <RegistryKey Root="HKLM" Key="SOFTWARE\Microsoft\Windows\CurrentVersion\WslX\MSI">
                     <RegistryValue Name="InstallLocation" Value="[INSTALLDIR]" Type="string" />
                     <RegistryValue Name="ProductCode" Value="[ProductCode]" Type="string" />
                     <RegistryValue Name="Version" Value="${PACKAGE_VERSION}" Type="string" />
@@ -123,34 +124,34 @@
 
             <Component Id="wslservice" Guid="F0C8D6BA-1502-41E7-BF72-D93DFA134735" UninstallWhenSuperseded="yes" DisableRegistryReflection="yes" Bitness="always64">
 
-                <!-- WslServiceProxyStub -->
-                <RegistryKey Root="HKCR" Key="Interface\{38541BDC-F54F-4CEB-85D0-37F0F3D2617E}">
+                <!-- WSLX Fork: WslServiceProxyStub with updated GUIDs -->
+                <RegistryKey Root="HKCR" Key="Interface\{8b283ac3-d362-46f2-b68f-3ba6a1607cc8}">
                     <RegistryValue Value="ILxssUserSession" Type="string" />
                     <RegistryKey Key="ProxyStubClsid32">
-                        <RegistryValue Value="{4EA0C6DD-E9FF-48E7-994E-13A31D10DC60}" Type="string" />
+                        <RegistryValue Value="{27a1899d-d923-4ddd-91b7-454b90109e50}" Type="string" />
                     </RegistryKey>
                 </RegistryKey>
 
-                <RegistryKey Root="HKCR" Key="CLSID\{4EA0C6DD-E9FF-48E7-994E-13A31D10DC60}">
+                <RegistryKey Root="HKCR" Key="CLSID\{27a1899d-d923-4ddd-91b7-454b90109e50}">
                     <RegistryValue Value="PSFactoryBuffer" Type="string" />
                 </RegistryKey>
-                <RegistryKey Root="HKCR" Key="CLSID\{4EA0C6DD-E9FF-48E7-994E-13A31D10DC60}\InProcServer32">
+                <RegistryKey Root="HKCR" Key="CLSID\{27a1899d-d923-4ddd-91b7-454b90109e50}\InProcServer32">
                     <RegistryValue Value="[INSTALLDIR]wslserviceproxystub.dll" Type="string" />
                     <RegistryValue Name="ThreadingModel" Value="Both" Type="string" />
                 </RegistryKey>
 
-                <!-- ILxssUserSession -->
-                <RegistryKey Root="HKCR" Key="AppID\{370121D2-AA7E-4608-A86D-0BBAB9DA1A60}">
+                <!-- WSLX Fork: ILxssUserSession with updated AppID -->
+                <RegistryKey Root="HKCR" Key="AppID\{4424eff5-6510-481d-b912-606d81c43c52}">
 
                     <!-- O:BAG:BAD:(A;;CCDCSW;;;AU)(A;;CCDCSW;;;PS)(A;;CCDCSW;;;SY) -->
                     <RegistryValue Name="AccessPermission" Value="01000480580000006800000000000000140000000200440003000000000014000B00000001010000000000050B000000000014000B00000001010000000000050A000000000014000B0000000101000000000005120000000102000000000005200000002002000001020000000000052000000020020000" Type="binary" />
                     <RegistryValue Name="LaunchPermission" Value="01000480580000006800000000000000140000000200440003000000000014000B00000001010000000000050B000000000014000B00000001010000000000050A000000000014000B0000000101000000000005120000000102000000000005200000002002000001020000000000052000000020020000" Type="binary" />
-                    <RegistryValue Name="LocalService" Value="WSLService" Type="string" />
+                    <RegistryValue Name="LocalService" Value="WSLXService" Type="string" />
                 </RegistryKey>
 
-                <!-- WslSupport + LxssUserSession -->
-                <RegistryKey Root="HKCR" Key="CLSID\{a9b7a1b9-0671-405c-95f1-e0612cb4ce7e}">
-                    <RegistryValue Name="AppId" Value="{370121D2-AA7E-4608-A86D-0BBAB9DA1A60}" Type="string" />
+                <!-- WSLX Fork: WslSupport + LxssUserSession with updated CLSID -->
+                <RegistryKey Root="HKCR" Key="CLSID\{21ad80bd-b800-4027-b84a-1e0d074ae507}">
+                    <RegistryValue Name="AppId" Value="{4424eff5-6510-481d-b912-606d81c43c52}" Type="string" />
                     <RegistryValue Value="LxssUserSession" Type="string" />
                 </RegistryKey>
 
@@ -213,14 +214,14 @@
                     </RegistryKey>
                 </RegistryKey>
 
-                <!-- Session 0 service -->
-                <File Id="wslservice.exe" Source="${PACKAGE_INPUT_DIR}/wslservice.exe" KeyPath="yes" />
-                <ServiceInstall Name="WSLService" DisplayName="WSL Service" Description="WSL Service" Start="auto" Type="ownProcess" ErrorControl="normal" Account="LocalSystem" Vital="yes" Interactive="no" />
+                <!-- WSLX Fork: Session 0 service with updated names -->
+                <File Id="wslxservice.exe" Source="${PACKAGE_INPUT_DIR}/wslxservice.exe" KeyPath="yes" />
+                <ServiceInstall Name="WSLXService" DisplayName="WSLX Service" Description="WSLX Service" Start="auto" Type="ownProcess" ErrorControl="normal" Account="LocalSystem" Vital="yes" Interactive="no" />
 
                 <!-- The service is stopped on uninstall and upgrade.
-                     N.B. It shouldn't be started on install because it will fail to start if the OC is missing, 
+                     N.B. It shouldn't be started on install because it will fail to start if the OC is missing,
                      which would fail the install. -->
-                <ServiceControl Id="StopService" Stop="both" Remove="uninstall" Name="WSLService" Wait="yes" />
+                <ServiceControl Id="StopService" Stop="both" Remove="uninstall" Name="WSLXService" Wait="yes" />
             </Component>
 
             <Component Id="wslg" Guid="F0C8D6BA-1502-41E7-BF72-D93DFA134731" UninstallWhenSuperseded="yes" DisableRegistryReflection="yes" Bitness="always64">
@@ -497,14 +498,12 @@
 
                  We use 'BindImage' since its just before 'CreateShortcuts' in the install sequence
              -->
+            <!-- WSLX Fork: DISABLED for SxS safety - these actions would remove/deprovision canonical WSL MSIX
             <Custom Action="DeprovisionMsix" After="BindImage" Condition='((not INSTALLED) or (REMOVE~="ALL")) and (not UPGRADINGPRODUCTCODE) and (not SKIPMSIX = 1)'/>
-
-            <!-- We need to remove the MSIX both as user and as system to work around a race condition in MSIX -->
             <Custom Action="RemoveMsixAsUser" After="DeprovisionMsix" Condition='((not INSTALLED) or (REMOVE~="ALL")) and (not UPGRADINGPRODUCTCODE) and (not SKIPMSIX = 1)'/>
             <Custom Action="RemoveMsixAsSystem" After="RemoveMsixAsUser" Condition='((not INSTALLED) or (REMOVE~="ALL")) and (not UPGRADINGPRODUCTCODE) and (not SKIPMSIX = 1)'/>
-
-            <!-- This needs to run before the MSI logic tries to write the registry or create shortcuts-->
             <Custom Action="CleanMsixState" After="RemoveMsixAsSystem" Condition='((not INSTALLED) or (not REMOVE~="ALL")) and (not UPGRADINGPRODUCTCODE)' />
+            -->
 
             <!-- This is needed to remove the  SFGAO_NONENUMERATED flag from the explorer keys, which can prevent the WSL icon from being visible -->
             <Custom Action="CleanExplorerState" Before="WriteRegistryValues" Condition='((not REMOVE~="ALL") or WIX_UPGRADE_DETECTED)  and (not UPGRADINGPRODUCTCODE)' />

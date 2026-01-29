@@ -49,13 +49,14 @@ set(HEADERS
     WslCoreTcpIpStateTracking.h
     WslCoreVm.h)
 
-add_executable(wslservice ${SOURCES} ${HEADERS})
-add_dependencies(wslservice wslserviceidl wslservicemc)
+# WSLX Fork: Renamed from wslservice to wslxservice for SxS operation
+add_executable(wslxservice ${SOURCES} ${HEADERS})
+add_dependencies(wslxservice wslserviceidl wslservicemc)
 add_compile_definitions(__WRL_CLASSIC_COM__)
 add_compile_definitions(__WRL_DISABLE_STATIC_INITIALIZE__)
 add_compile_definitions(USE_COM_CONTEXT_DEF=1)
-set_target_properties(wslservice PROPERTIES LINK_FLAGS "/merge:minATL=.rdata /include:__minATLObjMap_LxssUserSession_COM")
-target_link_libraries(wslservice
+set_target_properties(wslxservice PROPERTIES LINK_FLAGS "/merge:minATL=.rdata /include:__minATLObjMap_LxssUserSession_COM")
+target_link_libraries(wslxservice
                       ${COMMON_LINK_LIBRARIES}
                       computecore
                       common
@@ -65,5 +66,5 @@ target_link_libraries(wslservice
                       Winhttp.lib
                       Synchronization.lib)
 
-target_precompile_headers(wslservice REUSE_FROM common)
-set_target_properties(wslservice PROPERTIES FOLDER windows)
+target_precompile_headers(wslxservice REUSE_FROM common)
+set_target_properties(wslxservice PROPERTIES FOLDER windows)
