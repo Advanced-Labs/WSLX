@@ -142,7 +142,7 @@ cpp_quote("#define LXSS_VM_MODE_VHD_NAME L\"ext4.vhdx\"")
 
 cpp_quote("#define LXSS_TOOLS_DIRECTORY L\"tools\"")
 
-cpp_quote("#define LXSS_REGISTRY_PATH L\"Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\Lxss\"")
+cpp_quote("#define LXSS_REGISTRY_PATH L\"Software\\\\Microsoft\\\\Windows\\\\CurrentVersion\\\\WslX\"")
 cpp_quote("#define LXSS_DISK_MOUNTS_REGISTRY_PATH LXSS_REGISTRY_PATH L\"\\\\DiskMounts\"")
 cpp_quote("#define LXSS_WSL_DEFAULT_VERSION L\"DefaultVersion\"")
 cpp_quote("#define LXSS_NOTIFICATIONS_KEY L\"Notifications\"")
@@ -154,15 +154,17 @@ cpp_quote("#define LXSS_WSL_VERSION_2 2")
 cpp_quote("#define WSL_DISTRO_NAME L\"DistributionName\"")
 cpp_quote("#define LXSS_OOBE_COMPLETE_NAME L\"OOBEComplete\"")
 
-cpp_quote("const GUID CLSID_LxssUserSession = {0xa9b7a1b9, 0x0671, 0x405c, {0x95, 0xf1, 0xe0, 0x61, 0x2c, 0xb4, 0xce, 0x7e}};")
+// WSLX Fork: Updated CLSIDs for SxS operation
+cpp_quote("const GUID CLSID_LxssUserSession = {0x21ad80bd, 0xb800, 0x4027, {0xb8, 0x4a, 0x1e, 0x0d, 0x07, 0x4a, 0xe5, 0x07}};")
 cpp_quote("const GUID CLSID_LxssUserSessionInBox = {0x4f476546, 0xb412, 0x4579, {0xb6, 0x4c, 0x12, 0x3d, 0xf3, 0x31, 0xe3, 0xd6}};")
 cpp_quote("#ifdef __cplusplus")
-cpp_quote("class DECLSPEC_UUID(\"a9b7a1b9-0671-405c-95f1-e0612cb4ce7e\") LxssUserSession;")
+cpp_quote("class DECLSPEC_UUID(\"21ad80bd-b800-4027-b84a-1e0d074ae507\") LxssUserSession;")
 cpp_quote("class DECLSPEC_UUID(\"4f476546-b412-4579-b64c-123df331e3d6\") LxssUserSessionInBox;")
 cpp_quote("#endif")
 
+// WSLX Fork: Updated IID for SxS operation
 [
-    uuid(38541BDC-F54F-4CEB-85D0-37F0F3D2617E),
+    uuid(8b283ac3-d362-46f2-b68f-3ba6a1607cc8),
     pointer_default(unique),
     object
 ]

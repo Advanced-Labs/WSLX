@@ -18,6 +18,7 @@ Abstract:
 #include "WslCoreFilesystem.h"
 #include "LxssIpTables.h"
 #include "LxssUserSessionFactory.h"
+#include "fork_identity.h"
 #include <ctime>
 
 using namespace wsl::windows::common::registry;
@@ -47,7 +48,7 @@ class WslService : public Windows::Internal::Service<WslService, Windows::Intern
 public:
     static wchar_t* GetName()
     {
-        return const_cast<LPWSTR>(L"WslService");
+        return const_cast<LPWSTR>(WSLX_SERVICE_NAME);
     }
 
     static void OnSessionChanged(DWORD eventType, DWORD sessionId);
@@ -196,7 +197,8 @@ CATCH_RETURN()
 void WslService::RegisterEventSource()
 try
 {
-    m_eventLog.reset(::RegisterEventSource(nullptr, L"WSL"));
+    // WSLX Fork: Updated event source name for SxS operation
+    m_eventLog.reset(::RegisterEventSource(nullptr, L"WSLX"));
     THROW_LAST_ERROR_IF(!m_eventLog);
 
     wsl::windows::common::SetEventLog(m_eventLog.get());

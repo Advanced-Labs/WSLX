@@ -65,7 +65,8 @@ enum class ShutdownBehavior
 /// Each COM client gets a unique LxssUserSession object which contains a std::weak_ptr to a LxssUserSessionImpl for that user.
 /// </summary>
 
-class DECLSPEC_UUID("a9b7a1b9-0671-405c-95f1-e0612cb4ce7e") LxssUserSession
+// WSLX Fork: Updated CLSID for SxS operation
+class DECLSPEC_UUID("21ad80bd-b800-4027-b84a-1e0d074ae507") LxssUserSession
     : public Microsoft::WRL::RuntimeClass<Microsoft::WRL::RuntimeClassFlags<Microsoft::WRL::ClassicCom>, ILxssUserSession, IWslSupport, IFastRundown>
 {
 public:

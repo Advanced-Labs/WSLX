@@ -695,7 +695,8 @@ std::filesystem::path wsl::windows::common::wslutil::GetBasePath()
 
 std::wstring wsl::windows::common::wslutil::GetDebugShellPipeName(_In_ PSID Sid)
 {
-    return ConstructPipePath(std::wstring(L"wsl_debugshell_") + SidToString(Sid).get());
+    // WSLX Fork: Updated pipe prefix for SxS operation
+    return ConstructPipePath(std::wstring(WSLX_DEBUG_SHELL_PIPE_PREFIX) + SidToString(Sid).get());
 }
 
 DWORD
@@ -1490,7 +1491,8 @@ try
     static std::wstring path = wil::GetWindowsDirectoryW<std::wstring>() + L"\\temp\\wsl-install-log.txt";
 
     // Wait up to 10 seconds for the log file mutex
-    wil::unique_handle mutex{CreateMutex(nullptr, true, L"Global\\WslInstallLog")};
+    // WSLX Fork: Updated mutex name for SxS operation
+    wil::unique_handle mutex{CreateMutex(nullptr, true, WSLX_INSTALL_LOG_MUTEX)};
     THROW_LAST_ERROR_IF(!mutex);
 
     THROW_LAST_ERROR_IF(WaitForSingleObject(mutex.get(), 10 * 1000) != WAIT_OBJECT_0);

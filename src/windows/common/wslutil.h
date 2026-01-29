@@ -19,6 +19,7 @@ Abstract:
 #include "SubProcess.h"
 #include <winrt/windows.management.deployment.h>
 #include "JsonUtils.h"
+#include "fork_identity.h"
 
 namespace wsl::windows::common {
 struct Error;
@@ -44,7 +45,8 @@ inline auto c_msixPackageFamilyName = L"MicrosoftCorporationII.WindowsSubsystemF
 inline auto c_githubUrlOverrideRegistryValue = L"GitHubUrlOverride";
 inline auto c_vhdFileExtension = L".vhd";
 inline auto c_vhdxFileExtension = L".vhdx";
-inline constexpr auto c_vmOwner = L"WSL";
+// WSLX Fork: Updated VM owner for SxS operation
+inline constexpr auto c_vmOwner = WSLX_VM_OWNER;
 
 struct GitHubReleaseAsset
 {
