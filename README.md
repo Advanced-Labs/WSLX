@@ -1,49 +1,194 @@
-# Welcome to the Windows Subsystem for Linux (WSL) repository
+# WSLX - Windows Subsystem for Linux (Fork)
 
 <p align="center">
-  <img src="./Images/Square44x44Logo.targetsize-256.png" alt="WSL logo"/>
+  <img src="./Images/Square44x44Logo.targetsize-256.png" alt="WSLX logo"/>
 </p>
 
-[Learn more about WSL](https://aka.ms/wsldocs) | [Downloads & Release notes](https://github.com/microsoft/WSL/releases) | [Contributing to WSL](./CONTRIBUTING.md)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)]()
+[![Platform](https://img.shields.io/badge/platform-Windows%2011-0078D6.svg)]()
 
-## About
+**WSLX** is a fork of Microsoft's open-source [WSL](https://github.com/microsoft/WSL) repository, modified to run **side-by-side (SxS)** with the canonical WSL installation on the same Windows machine.
 
-Windows Subsystem for Linux (WSL) is a powerful way for you to run your Linux command-line tools, utilities and applications, all unmodified and directly on Windows without the overhead of a traditional virtual machine or dual boot setup.
+## Why WSLX?
 
-You can install WSL right away by running this command inside of your Windows command line:
+WSLX enables scenarios that aren't possible with a single WSL installation:
+
+- **Development & Testing** - Develop and test WSL modifications without risking your production WSL environment
+- **Experimental Features** - Run bleeding-edge or experimental WSL features in complete isolation
+- **Research** - Study WSL internals and behavior without affecting daily workflows
+- **CI/CD Testing** - Test WSL-dependent applications against different WSL configurations simultaneously
+
+## Important Limitation
+
+> **Warning**
+> **`\\wsl.localhost` UNC namespace is NOT supported for WSLX distributions.**
+>
+> The Windows shell integration components (`P9rdr.sys`, `P9np.dll`) are closed-source and hardcode the canonical WSL CLSID. WSLX distributions will **not** appear in `\\wsl.localhost` or Windows Explorer's "Linux" folder.
+>
+> **Workarounds:**
+> - Use **VirtioFS** mounts for file access
+> - Use **SMB/Samba** shares within the distribution
+> - Access files via `wslx.exe` commands directly
+
+## Technical Architecture
+
+WSLX achieves SxS operation by changing all identity surfaces that would otherwise collide with canonical WSL:
+
+### Service Identity
+
+| Component | Canonical | WSLX |
+|-----------|-----------|------|
+| Service Name | `WSLService` | `WSLXService` |
+| CLI Binary | `wsl.exe` | `wslx.exe` |
+| Service Binary | `wslservice.exe` | `wslxservice.exe` |
+| Install Directory | `C:\Program Files\WSL` | `C:\Program Files\WSLX` |
+
+### COM Identity (Unique GUIDs)
+
+| Purpose | WSLX GUID |
+|---------|-----------|
+| CLSID (UserSession) | `{21ad80bd-b800-4027-b84a-1e0d074ae507}` |
+| AppID | `{4424eff5-6510-481d-b912-606d81c43c52}` |
+| IID (IUserSession) | `{8b283ac3-d362-46f2-b68f-3ba6a1607cc8}` |
+| ProxyStub CLSID | `{27a1899d-d923-4ddd-91b7-454b90109e50}` |
+
+### Registry & Networking
+
+| Component | Canonical | WSLX |
+|-----------|-----------|------|
+| Distro Registry | `HKCU\...\Lxss` | `HKCU\...\WslX` |
+| HNS Network Name | `WSL` | `WSLX` |
+| VM Owner | `WSL` | `WSLX` |
+| HvSocket Ports | `50000-50005` | `51000-51005` |
+
+All identity constants are centralized in [`src/shared/inc/fork_identity.h`](./src/shared/inc/fork_identity.h).
+
+## Installation
+
+### Prerequisites
+
+- Windows 11 (Build 22000+)
+- Virtual Machine Platform enabled
+- Administrator privileges for installation
+
+### Install WSLX (SxS Safe)
 
 ```powershell
-wsl --install
+# Install WSLX alongside canonical WSL
+msiexec /i wslx.msi SKIPMSIX=1 /qn
+
+# Verify both services are running
+sc query WSLService    # Canonical WSL
+sc query WSLXService   # WSLX Fork
 ```
 
-You can learn more about [best practices for setup](https://learn.microsoft.com/windows/wsl/setup/environment), [overviews of WSL](https://learn.microsoft.com/windows/wsl/about) and more at our [WSL documentation page](https://learn.microsoft.com/windows/wsl/).
+The `SKIPMSIX=1` flag prevents WSLX from interfering with the canonical WSL MSIX package.
 
-## Related repositories
+### Basic Usage
 
-WSL also has related open source repositories:
+```powershell
+# Install a distribution
+wslx --install Ubuntu
 
-- [microsoft/WSL2-Linux-Kernel](https://github.com/microsoft/WSL2-Linux-Kernel) - The Linux kernel shipped with WSL
-- [microsoft/WSLg](https://github.com/microsoft/wslg) - Support for Linux GUI apps in WSL
-- [microsoftdocs/wsl](https://github.com/microsoftdocs/wsl) - WSL documentation at aka.ms/wsldocs
+# List distributions
+wslx --list --verbose
+
+# Run a command
+wslx -d Ubuntu -- echo "Hello from WSLX"
+
+# Enter a distribution
+wslx -d Ubuntu
+```
+
+## Building from Source
+
+### Requirements
+
+- Visual Studio 2022 with C++ workload
+- Windows SDK 26100+
+- CMake 3.25+
+- Nuget
+
+### Build Steps
+
+```powershell
+# Clone the repository
+git clone https://github.com/Advanced-Labs/WSLX.git
+cd WSLX
+
+# Configure (copy and customize if needed)
+cp UserConfig.cmake.sample UserConfig.cmake
+
+# Build
+cmake -B build -G "Visual Studio 17 2022" -A x64
+cmake --build build --config Release
+
+# Build MSI
+cmake --build build --target package
+```
+
+See [doc/docs/dev-loop.md](./doc/docs/dev-loop.md) for detailed development instructions.
+
+## Key Files Modified
+
+The following files contain WSLX-specific modifications from upstream WSL:
+
+| File | Purpose |
+|------|---------|
+| `src/shared/inc/fork_identity.h` | Central identity header with all fork constants |
+| `src/windows/wslservice/exe/ServiceMain.cpp` | Service name registration |
+| `src/windows/wslservice/inc/wslservice.idl` | COM GUIDs and registry paths |
+| `src/windows/common/WslCoreConfig.cpp` | HNS network IDs and names |
+| `src/windows/common/wslutil.h` | VM owner string |
+| `src/shared/inc/lxinitshared.h` | HvSocket port numbers |
+| `msipackage/package.wix.in` | MSI identities, MSIX cleanup disabled |
+
+## Documentation
+
+### WSLX Research Documents
+
+The [`Research/`](./Research/) directory contains detailed technical analysis:
+
+| Document | Description |
+|----------|-------------|
+| [SXS_MVP_PLAN.md](./Research/SXS_MVP_PLAN.md) | Implementation plan and checklist |
+| [SXS_DEEP_DIVE.md](./Research/SXS_DEEP_DIVE.md) | Technical deep dive with evidence labels |
+| [CONCURRENT_VM_PROOF.md](./Research/CONCURRENT_VM_PROOF.md) | Procedure to verify concurrent VM operation |
+| [UNC_RUNTIME_PROOF.md](./Research/UNC_RUNTIME_PROOF.md) | Procedure to verify UNC enumeration behavior |
+| [EVIDENCE_PACK.md](./Research/EVIDENCE_PACK.md) | Audit-grade evidence for all singleton claims |
+
+### Upstream WSL Documentation
+
+| Document | Description |
+|----------|-------------|
+| [dev-loop.md](./doc/docs/dev-loop.md) | Build and development workflow |
+| [debugging.md](./doc/docs/debugging.md) | Debugging guide |
+| [technical-documentation/](./doc/docs/technical-documentation/) | Architecture deep dives |
+
+## Known Limitations
+
+| Limitation | Reason | Workaround |
+|------------|--------|------------|
+| `\\wsl.localhost` not supported | P9rdr.sys/P9np.dll are closed-source | Use VirtioFS or SMB shares |
+| WSL1 mode not supported | Requires Lxcore.sys (closed-source kernel driver) | Use WSL2 mode only |
+| No `bash.exe`/`wsl.exe` aliases | Execution aliases would conflict with canonical WSL | Invoke `wslx.exe` directly |
+| Windows Explorer integration | Shell folder CLSID is hardcoded in Explorer | Access via CLI only |
 
 ## Contributing
 
-This project welcomes contributions of all types, including coding features / bug fixes, documentation fixes, design proposals and more. 
+Contributions are welcome. Please read [CONTRIBUTING.md](./CONTRIBUTING.md) before submitting changes.
 
-We ask that before you start working on a contribution, please read our [Contributor's Guide](./CONTRIBUTING.md).
+For WSLX-specific changes, ensure all identity constants remain in `fork_identity.h` and do not introduce new collisions with canonical WSL.
 
-For guidance on developing for WSL, please read the [developer docs](./doc/docs/dev-loop.md) for instructions on how to build WSL from source and details on its architecture.
+## License
 
-## Code of Conduct
+MIT License - Same as upstream WSL. See [LICENSE](./LICENSE).
 
-This project has adopted the [Microsoft Open Source Code of Conduct](./CODE_OF_CONDUCT.md)
+## Upstream
 
-## Trademarks
+Forked from: [microsoft/WSL](https://github.com/microsoft/WSL)
 
-This project may contain trademarks or logos for projects, products, or services. Authorized use of Microsoft trademarks or logos is subject to and must follow [Microsoft’s Trademark & Brand Guidelines](https://www.microsoft.com/legal/intellectualproperty/trademarks). Use of Microsoft trademarks or logos in modified versions of this project must not cause confusion or imply Microsoft sponsorship. Any use of third-party trademarks or logos are subject to those third-party’s policies.
+---
 
-## Privacy and telemetry
-
-The application logs basic diagnostic data (telemetry). For more information on privacy and what we collect, see our [data and privacy documentation](DATA_AND_PRIVACY.md).
-
-The software may collect information about you and your use of the software and send it to Microsoft. Microsoft may use this information to provide services and improve our products and services. You may turn off the telemetry as described in the repository. There are also some features in the software that may enable you and Microsoft to collect data from users of your applications. If you use these features, you must comply with applicable law, including providing appropriate notices to users of your applications together with a copy of Microsoft’s privacy statement. Our privacy statement is located at https://go.microsoft.com/fwlink/?LinkID=824704. You can learn more about data collection and use in the help documentation and our privacy statement. Your use of the software operates as your consent to these practices.
+**Note:** WSLX is an independent fork and is not affiliated with or endorsed by Microsoft. For production WSL usage, please use the official [Microsoft WSL](https://github.com/microsoft/WSL).
