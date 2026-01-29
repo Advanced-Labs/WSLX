@@ -57,7 +57,7 @@
 // String form for IDL/registry
 #define WSLX_APPID_STRING L"{4424eff5-6510-481d-b912-606d81c43c52}"
 
-// IWslXUserSession interface IID (was: ILxssUserSession)
+// ILxssUserSession interface IID
 // Canonical: {38541BDC-F54F-4CEB-85D0-37F0F3D2617E}
 // Fork:      {8b283ac3-d362-46f2-b68f-3ba6a1607cc8}
 #define WSLX_IID_USER_SESSION \

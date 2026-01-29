@@ -263,11 +263,21 @@ endif()
 # Determine the Visual Studio installation directory which contains LLVM tools
 # N.B. The version is set to VS2022 to ensure local runs match pipeline behavior
 execute_process(
-    COMMAND "${VSWHERE_SOURCE_DIR}/vswhere.exe" -version "[17.0,18.0)" -products * -property installationPath
+    COMMAND "${VSWHERE_SOURCE_DIR}/vswhere.exe" -version "[17.0,18.0)" -products Microsoft.VisualStudio.Product.Community -property installationPath -latest
     OUTPUT_VARIABLE VS_INSTALL_DIR
     OUTPUT_STRIP_TRAILING_WHITESPACE
-    COMMAND_ERROR_IS_FATAL ANY
 )
+if (NOT VS_INSTALL_DIR)
+    # Fallback to any VS installation
+    execute_process(
+        COMMAND "${VSWHERE_SOURCE_DIR}/vswhere.exe" -version "[17.0,18.0)" -products * -property installationPath -latest
+        OUTPUT_VARIABLE VS_INSTALL_DIR
+        OUTPUT_STRIP_TRAILING_WHITESPACE
+        COMMAND_ERROR_IS_FATAL ANY
+    )
+endif()
+message(STATUS "VS_INSTALL_DIR: ${VS_INSTALL_DIR}")
+message(STATUS "CMAKE_HOST_SYSTEM_PROCESSOR: ${CMAKE_HOST_SYSTEM_PROCESSOR}")
 
 if (NOT VS_INSTALL_DIR)
     message(FATAL_ERROR "Could not determine Visual Studio 2022 installation directory.")

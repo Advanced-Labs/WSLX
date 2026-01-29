@@ -163,6 +163,7 @@ cpp_quote("class DECLSPEC_UUID(\"4f476546-b412-4579-b64c-123df331e3d6\") LxssUse
 cpp_quote("#endif")
 
 // WSLX Fork: Updated IID for SxS operation
+// Fork IID: {8b283ac3-d362-46f2-b68f-3ba6a1607cc8}
 [
     uuid(8b283ac3-d362-46f2-b68f-3ba6a1607cc8),
     pointer_default(unique),

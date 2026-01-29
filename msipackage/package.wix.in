@@ -115,16 +115,16 @@
                 </RegistryKey>
               <?endforeach?>
 
-              <ProgId Id="WSLDistributionTar" Description="WSL tar distribution" Icon="wsl.exe">
+              <ProgId Id="WSLDistributionTar" Description="WSL tar distribution" Icon="wslx.exe">
                   <Extension Id="wsl">
-                      <Verb Id="open" Command="open" TargetFile="wsl.exe" Argument="--install --prompt-before-exit --from-file &quot;%1&quot;" />
+                      <Verb Id="open" Command="open" TargetFile="wslx.exe" Argument="--install --prompt-before-exit --from-file &quot;%1&quot;" />
                   </Extension>
               </ProgId>
             </Component>
 
             <Component Id="wslservice" Guid="F0C8D6BA-1502-41E7-BF72-D93DFA134735" UninstallWhenSuperseded="yes" DisableRegistryReflection="yes" Bitness="always64">
 
-                <!-- WSLX Fork: WslServiceProxyStub with updated GUIDs -->
+                <!-- WSLX Fork: WslServiceProxyStub with fork GUIDs -->
                 <RegistryKey Root="HKCR" Key="Interface\{8b283ac3-d362-46f2-b68f-3ba6a1607cc8}">
                     <RegistryValue Value="ILxssUserSession" Type="string" />
                     <RegistryKey Key="ProxyStubClsid32">
@@ -517,7 +517,7 @@
                  Note: versions < 2.0.2 pass REINSTALL=ALL which sets REMOVE=ALL.
                  Use WIX_UPGRADE_DETECTED to cover this scenario since it's always set when a previous build is installed.
             -->
-            <Custom Action="InstallMsix.SetProperty" After="CleanMsixState" Condition='((not REMOVE~="ALL") or WIX_UPGRADE_DETECTED) and (not UPGRADINGPRODUCTCODE) and (not SKIPMSIX = 1)' />
+            <Custom Action="InstallMsix.SetProperty" After="RemoveRegistryKeyProtections" Condition='((not REMOVE~="ALL") or WIX_UPGRADE_DETECTED) and (not UPGRADINGPRODUCTCODE) and (not SKIPMSIX = 1)' />
             <Custom Action="InstallMsix" After="InstallMsix.SetProperty" Condition='((not REMOVE~="ALL") or WIX_UPGRADE_DETECTED) and (not UPGRADINGPRODUCTCODE) and (not SKIPMSIX = 1)' />
             <Custom Action="InstallMsixAsUser" After="InstallMsix" Condition='((not REMOVE~="ALL") or WIX_UPGRADE_DETECTED) and (not UPGRADINGPRODUCTCODE) and (not SKIPMSIX = 1)' />
 

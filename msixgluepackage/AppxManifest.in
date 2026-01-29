@@ -28,7 +28,7 @@
     </Resources>
     <Applications>
         <Application Id="wsl"
-          Executable="wsl.exe"
+          Executable="wslx.exe"
           EntryPoint="Windows.FullTrustApplication"
           uap10:Parameters="--cd ~">
             <uap:VisualElements
@@ -42,10 +42,10 @@
                 <uap:SplashScreen Image="Images\SplashScreen.png"/>
             </uap:VisualElements>
             <Extensions>
-                <uap3:Extension Category="windows.appExecutionAlias" Executable="wsl.exe" EntryPoint="Windows.FullTrustApplication">
+                <uap3:Extension Category="windows.appExecutionAlias" Executable="wslx.exe" EntryPoint="Windows.FullTrustApplication">
                     <uap3:AppExecutionAlias>
                         <desktop:ExecutionAlias Alias="bash.exe"/>
-                        <desktop:ExecutionAlias Alias="wsl.exe"/>
+                        <desktop:ExecutionAlias Alias="wslx.exe"/>
                         <desktop:ExecutionAlias Alias="wslconfig.exe"/>
                     </uap3:AppExecutionAlias>
                 </uap3:Extension>
@@ -57,7 +57,7 @@
                         PublicFolder="Public">
                         <uap3:Properties>
                             <Clsid>{a9b7a1b9-0671-405c-95f1-e0612cb4ce7e}</Clsid>
-                            <EntryPoint>wsl.exe</EntryPoint>
+                            <EntryPoint>wslx.exe</EntryPoint>
                         </uap3:Properties>
                     </uap3:AppExtension>
                 </uap3:Extension>

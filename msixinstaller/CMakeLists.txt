@@ -1,4 +1,4 @@
-set(DEPENDENCIES "wsl.exe;wslinstaller.exe;wslinstallerproxystub.dll")
+set(DEPENDENCIES "wslx.exe;wslinstaller.exe;wslinstallerproxystub.dll")
 
 # Don't include the MSI if building a thin package.
 if (NOT "${WSL_BUILD_THIN_PACKAGE}")
@@ -9,7 +9,7 @@ add_appx_target(msixinstallerpackage
                 "${DEPENDENCIES}"
                 "${CMAKE_CURRENT_LIST_DIR}/AppxManifest.in"
                 "${BIN}/installer.msix"
-                "wsl;wslinstaller;msipackage;wslinstallerproxystub")
+                "wslx;wslinstaller;msipackage;wslinstallerproxystub")
 
 set(ARM64_BUNDLE_PATH ${CMAKE_SOURCE_DIR}/bin/arm64/${CMAKE_BUILD_TYPE}/installer.msix)
 set(X64_BUNDLE_PATH ${CMAKE_SOURCE_DIR}/bin/X64/${CMAKE_BUILD_TYPE}/installer.msix)
