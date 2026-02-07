@@ -3,74 +3,118 @@
 **Date:** 2026-02-07
 
 > **This document contains evolving research concepts, not specifications.**
-> Names, boundaries, and architectural details are subject to change as
-> understanding deepens. Nothing here constitutes a commitment or a frozen design.
+> Names, boundaries, architectural details, and specific technology choices are
+> subject to change as understanding deepens and prototypes yield data. Nothing
+> here constitutes a commitment or a frozen design. Where names from prior
+> research (Portal, Gemini, etc.) appear, they refer to the abstract capability
+> being explored, not to any specific interface or protocol version.
 
 ---
 
 ## 0. What This Document Is
 
-This is the founding description of **NXIA R3**: a platform architecture where
-virtualization is a feature — not infrastructure overhead — and where installing
-the platform gives you not just libraries and tools, but a **managed virtual OS
-kernel substrate** that the platform owns, controls, and exposes to everything
-built on top of it.
+This is the founding description of **NXIA R3**: a multiplatform hypervisor
+system whose architecture and designs are based on a customized/augmented Linux
+kernel, built to support and implement the technologies needed for the
+realization of NXIA's concepts — and which ships as part of the NXIA runtime
+distribution.
 
-NXIA R3 synthesizes research from multiple directions:
+The document's subject is: **the potential architecture of a Multi-OS Hypervisor
+System** — one that runs on Windows 11+, targets macOS, and targets Linux in
+two distinct modes — using a Linux-based System VM as its semantic substrate,
+a portable VMM as its hypervisor layer, and shared-memory-first conduits as its
+core communication primitive.
 
-- **Portal**: zero-copy shared memory as a first-class primitive
-  (virtio-pmem/DAX, ivshmem-class mechanisms)
-- **Gemini**: bidirectional cross-OS execution fabric (host ↔ System VM)
-- **WARP**: the System VM as an arbitrary runtime platform capable of hosting
-  Linux-personality kernels, modified kernels, or entirely new OS personalities
+### Target platforms
+
+| Host OS | Backend | Priority | Notes |
+|---|---|---|---|
+| **Windows 11+** | WHP | Primary | Where most users are; developer workstations |
+| **macOS** | HVF (or equivalent) | Target | Apple Silicon; backend maturity TBD |
+| **Linux (mode 1)** | KVM | Target | Regular distros, bare-metal, no custom host kernel required (modules/drivers OK) |
+| **Linux (mode 2)** | KVM or native | To evaluate | NXIA's own Linux-based distro; bare-metal kernel could be our custom kernel or stock — requires feasibility, viability, and maintenance evaluation |
+
+### Relationship to prior research
+
+NXIA R3 synthesizes evolving research from multiple directions. Key areas that
+inform this architecture include:
+
+- **Shared memory** (Portal-class): zero-copy memory sharing between host and
+  guest, and between VMs, via virtio-pmem/DAX and ivshmem-class mechanisms
+- **Cross-OS execution** (Gemini-class): bidirectional execution bridging
+  between host OS and System VM
 - **Snapshots**: process-level and VM-level state capture/restore
-- **Hypervisor feasibility**: OpenVMM as the portable VMM substrate across
-  Windows (WHP), Linux (KVM), and potentially macOS (HVF)
+- **Hypervisor feasibility**: OpenVMM as a candidate portable VMM substrate
 
-Prior research exists in a WSLX context (a differentiated, side-by-side WSL fork
-that is independently distributable and runs in parallel to canonical WSL). NXIA
-R3 generalizes beyond WSLX: we are building our own multiplatform hypervisor
-system. WSLX remains relevant as a proving ground and as evidence that the WSL
-Linux kernel, its distro model, and its integration surfaces are viable building
-blocks — but NXIA R3 is not coupled to WSL.
+Prior research exists in a WSLX context (a differentiated, side-by-side WSL
+fork that is independently distributable and runs in parallel to canonical WSL
+on Windows). NXIA R3 generalizes beyond WSLX: we are building our own
+multiplatform hypervisor system. WSLX remains relevant as a proving ground and
+as evidence that the WSL Linux kernel, its distro model, and its integration
+surfaces are viable building blocks — but NXIA R3 is not coupled to WSL.
 
 ---
 
 ## 1. The Core Thesis
 
-### 1.1 Virtualization as a feature
+### 1.1 A platform that includes a virtual OS kernel
 
-Most platforms treat VMs as deployment targets or isolation boxes. NXIA R3 treats
-the VM as **part of the runtime itself**. When you install NXIA, you get:
+Most platforms ship libraries, tools, and runtimes. NXIA R3 ships those *and*
+a managed virtual OS kernel. When you install NXIA, you get:
 
 - Native host components (lightweight, per-OS)
 - A portable VMM (OpenVMM-class, Rust, cross-platform)
-- A **System VM**: a Linux-kernel-based virtual machine that *is* the platform's
-  semantic substrate
+- A **System VM**: a Linux-kernel-based virtual machine that *is* the
+  platform's semantic substrate
 
-This is analogous to installing a language runtime — except the runtime includes
-a managed kernel. The modest virtualization cost is the price of admission for:
-consistent cross-OS semantics, kernel-grade isolation, controlled device
-composition, and shared-memory primitives that don't exist in user-space.
+This is not a metaphor. The platform literally provides a VM in both the
+software sense (a runtime environment) and the OS/hypervisor sense (a virtual
+machine managed by a hypervisor, with its own kernel, memory space, and device
+surface). The System VM is as much a part of the NXIA distribution as `dotnet`
+is part of a .NET installation — except it's an entire managed kernel
+environment.
 
-### 1.2 The meta-runtime
+The modest virtualization cost is the price of admission for: consistent
+cross-OS semantics, kernel-grade isolation, controlled device composition, and
+shared-memory primitives that don't exist in user-space.
+
+### 1.2 Virtualization as a feature
+
+NXIA R3 treats virtualization as a feature, not infrastructure overhead.
+The VMM layer is not a deployment convenience — it is what gives the platform
+capabilities that no user-space runtime can provide:
+
+- Direct control over guest physical memory mapping (zero-copy shared regions)
+- Kernel-grade isolation boundaries (stronger than containers)
+- Device composition (custom virtual devices, per-VM device sets)
+- Multi-VM topologies with shared resources
+- Snapshot/restore of entire execution states
+- A consistent kernel across all host OSes
+
+### 1.3 The meta-runtime
 
 NXIA R3 is not itself an application platform. It is a **meta-runtime**: a
-foundation that other runtimes, languages, platforms, and execution models build
-on top of. The meta-runtime provides:
+foundation that other runtimes, languages, platforms, and execution models
+build on top of. The meta-runtime provides:
 
 - A kernel you control (scheduling, memory, namespaces, eBPF, LSM hooks)
 - OS-grade services (persistence, search, policy enforcement, orchestration)
-- A shared-memory fabric (Portal) for zero-copy communication
-- A cross-OS execution bridge (Gemini) for host integration
+- A shared-memory fabric for zero-copy communication
+- A cross-OS execution bridge for host integration
 - VM lifecycle primitives (snapshots, multi-VM, isolation profiles)
 
-Higher-level runtimes — whether existing (JVM, CLR, Node, Python) or new
-(custom language runtimes, AI agent runtimes, capability-oriented environments)
-— target the meta-runtime rather than each host OS individually. The meta-runtime
-absorbs platform variance.
+Higher-level runtimes — whether existing ones ported to the platform or entirely
+new ones — target the meta-runtime rather than each host OS individually. The
+meta-runtime absorbs platform variance.
 
-### 1.3 Universal distributivity
+The first planned port of an existing runtime is **.NET**, under the codename
+**dotnext**. dotnext is a fork of the .NET runtime extended to support the
+features and virtues of the NXIA platform — including shared-memory-backed
+marshalling, cross-OS execution bridging, and platform-aware security semantics.
+Other runtimes (JVM, Node, Python, custom language runtimes, AI agent runtimes)
+could follow the same pattern.
+
+### 1.4 Universal distributivity
 
 Distribution is a primitive, not an application-level concern. NXIA R3 aims for
 a world where:
@@ -101,8 +145,8 @@ Per-host-OS native code. Intentionally thin. Responsible for:
 - **Security and policy integration**: Host identity bridging (Windows user
   tokens, Linux uid/gid, macOS keychains), platform policy enforcement at the
   host boundary
-- **High-performance conduits**: The host-side endpoints of Portal shared memory
-  regions (memory-mapped files backing virtio-pmem devices), host-side Gemini
+- **High-performance conduits**: The host-side endpoints of shared memory
+  regions (memory-mapped files backing virtio-pmem devices), host-side cross-OS
   transport endpoints (hvsocket/vsock), and host networking integration
   (WinNAT, iptables/nftables, TAP adapters)
 - **Lifecycle and orchestration**: Starting/stopping the VMM, managing VM
@@ -110,18 +154,26 @@ Per-host-OS native code. Intentionally thin. Responsible for:
 
 What Stratum 1 is NOT: it is not where platform logic lives. It is a facade,
 a bridge, and a lifecycle manager. If the host OS changes or breaks something,
-Stratum 1 absorbs the impact. The rest of the platform is unaffected.
+Stratum 1 absorbs the impact. The rest of the platform is unaffected. This
+"hostility resistance" property — the ability to survive host-OS changes because
+the important state and logic live in the System VM — is a design goal. It must
+be validated, not assumed.
 
 ### Stratum 2: The VMM Layer
 
 A portable, cross-platform Virtual Machine Monitor. OpenVMM-class: written in
-Rust, with pluggable hypervisor backends:
+Rust, with pluggable hypervisor backends.
 
-| Host OS | Backend | Status |
+| Host OS | Backend | Feasibility |
 |---|---|---|
-| Windows 11+ | WHP (`virt_whp`) | Viable (OpenVMM production-tested) |
-| Linux | KVM (`virt_kvm`) | Viable (OpenVMM production-tested) |
-| macOS | HVF (`virt_hvf`) | Experimental (OpenVMM has a backend) |
+| Windows 11+ | WHP | Supported by OpenVMM; viable substrate for prototyping |
+| Linux | KVM | Supported by OpenVMM; viable substrate for prototyping |
+| macOS | HVF | Supported by OpenVMM on Apple Silicon; maturity TBD |
+
+> **Note on maturity:** OpenVMM is actively developed and used as a reference
+> VMM platform within Microsoft (via OpenHCL in Azure). It is not marketed as
+> a standalone production VMM. Maturity varies by backend and device surface.
+> Stabilization work is expected.
 
 Stratum 2 is responsible for:
 
@@ -129,18 +181,21 @@ Stratum 2 is responsible for:
 - **Device composition**: Which virtual devices each VM gets — VMBus synthetic
   devices, virtio devices (pmem, fs, net, blk, console), or custom devices
 - **Memory topology**: Guest physical address space layout, shared-memory region
-  mapping (the host-side of Portal), multi-VM shared regions
-- **Hyper-V enlightenment emulation**: SynIC, synthetic timers, hypercall
-  interface — so that a Hyper-V-enlightened Linux kernel runs unchanged on KVM
-  (OpenVMM's `hv1_emulator` crate handles this)
+  mapping, multi-VM shared regions
+- **Hyper-V enlightenment emulation**: OpenVMM appears to include Hyper-V
+  interface emulation (SynIC, synthetic timers, hypercall surfaces via the
+  `hv1_emulator` crate) intended to allow Hyper-V-aware kernels to operate
+  across backends. Exact scope and performance parity must be verified —
+  especially which enlightenments are required by our chosen kernel
+  configuration and whether behavior on the KVM path matches the WHP path.
 - **VM profile management**: Different VM configurations for different purposes
   (see Section 4)
 
 Stratum 2 is where NXIA R3 differentiates from "just running Linux in a VM."
 Control over the VMM means control over:
-- Which memory regions are shared (Portal)
-- Which devices exist (WARP device sets)
-- How multiple VMs relate to each other (distributed kernel research)
+- Which memory regions are shared
+- Which devices exist
+- How multiple VMs relate to each other
 - What the snapshot/restore semantics are
 
 ### Stratum 3: The System VM
@@ -149,20 +204,32 @@ A Linux-kernel-based virtual machine that serves as the platform's semantic
 substrate. This is where most platform complexity lives, implemented once,
 running identically on every host OS.
 
+**Kernel candidates:**
+
+- **WSL Linux Kernel** (currently 6.6.x LTS) as-is or forked — known to have
+  dual-stack driver support (VMBus synthetic + virtio) and DAX/virtio-pmem
+  readiness. Kernel config indicates CONFIG_VIRTIO_PMEM=y, CONFIG_VIRTIO_FS=y,
+  CONFIG_DAX=y alongside full Hyper-V driver support. To be verified against
+  our specific requirements.
+- **Upstream LTS kernel** configured with equivalent drivers — a viable
+  alternative that avoids WSL-specific coupling.
+- **Custom fork** of either base, modified for NXIA's needs.
+
+The choice is not finalized. What matters is the capability set, not the
+provenance.
+
 The System VM provides:
 
-- **A real Linux kernel** (currently based on 6.6.x LTS, with dual-stack
-  support for both VMBus synthetic devices and virtio devices — confirmed by
-  kernel config analysis showing CONFIG_VIRTIO_PMEM=y, CONFIG_VIRTIO_FS=y,
-  CONFIG_DAX=y alongside full Hyper-V driver support)
+- **A real Linux kernel** with both VMBus and virtio device support, enabling
+  the same kernel to boot under different VMM configurations
 - **Platform services**: Persistence engines, search/indexing, policy
   enforcement, orchestration, audit logging, capability management
-- **Guest-side Portal endpoints**: `/dev/pmem0` mapped with DAX for zero-copy
-  shared memory with the host (and potentially with other VMs)
-- **Guest-side Gemini agent**: The execution fabric endpoint that bridges
+- **Shared memory endpoints**: DAX-mapped regions for zero-copy shared memory
+  with the host (and potentially with other VMs)
+- **Cross-OS execution agent**: The execution fabric endpoint that bridges
   calls between host-native code and System VM services
-- **AgentX**: The control-plane agent that speaks the NXIA lifecycle protocol
-  (boot, configure, mount, exec, quiesce, resume, shutdown)
+- **Control agent**: The control-plane agent that speaks the NXIA lifecycle
+  protocol (boot, configure, mount, exec, quiesce, resume, shutdown)
 - **Namespace/container isolation**: Linux namespaces, cgroups, seccomp, LSM
   hooks — providing intra-VM isolation for workloads without additional VMs
 
@@ -172,30 +239,34 @@ embraces kernel modification:
 - eBPF programs for platform-level observability and policy
 - LSM modules for capability-based security enforcement
 - As long as the Linux userspace ABI is preserved, existing distros and
-  applications run unmodified (WARP Track A)
+  applications run unmodified
 
 ---
 
-## 3. Portal: Shared Memory as a First-Class Primitive
+## 3. Shared Memory as a First-Class Primitive
+
+> The concepts in this section are evolving. Names like "Portal" refer to the
+> abstract capability (zero-copy shared memory across the VM boundary), not to
+> a finalized interface specification.
 
 ### 3.1 Why shared memory matters
 
 Every cross-boundary communication mechanism (RPC, IPC, network) involves
 copying data. For a platform that treats the VM boundary as internal (not
-external), copy overhead becomes a tax on every operation. Portal eliminates
-this tax for the common case.
+external), copy overhead becomes a tax on every operation. A shared-memory
+primitive eliminates this tax for the common case.
 
-### 3.2 Implementation path
+### 3.2 Implementation direction
 
-Portal is built on **virtio-pmem with DAX** (Direct Access):
+The leading candidate mechanism is **virtio-pmem with DAX** (Direct Access):
 
 ```
 Host (Stratum 1):
-  portal_region.bin → memory-mapped file → OpenVMM virtio-pmem device
-                                                  │
-                                                  ▼ (PCI/MMIO)
+  backing_file → memory-mapped file → OpenVMM virtio-pmem device
+                                                │
+                                                ▼ (PCI/MMIO)
 System VM (Stratum 3):
-  /dev/pmem0 → DAX mount or raw mmap → Portal arena allocator
+  /dev/pmem0 → DAX mount or raw mmap → arena allocator
 ```
 
 Both sides see the same physical memory. No copies. The host writes; the guest
@@ -203,22 +274,21 @@ reads immediately. The guest writes; the host reads immediately. This is not
 emulated shared memory — it is literal shared pages via the hypervisor's address
 mapping.
 
-### 3.3 Portal primitives (conceptual)
+Key requirements for the shared memory system (abstract):
+- **Shared regions** mapped into both host and guest (and potentially multiple
+  guests)
+- **Arena allocation** within regions for structured, concurrent use
+- **Bounded references** that cross boundaries safely (no raw pointers; offset +
+  length + bounds checking + generation tracking)
+- **Ring structures** for producer/consumer communication
+- **Lightweight signaling** (doorbells) to wake consumers when data is available
+  — preferring the lowest-latency mechanism available on each backend
+  (e.g. HvCallSignalEvent on WHP; paravirt interrupts or vsock-based
+  notification depending on backend)
 
-- **PortalRegion**: A shared memory segment mapped into both host and guest
-- **PortalArena**: An allocator within a region (bump, slab, or concurrent)
-- **PortalSpan**: `(region_id, offset, length, flags, generation)` — the
-  universal "pointer" that crosses all boundaries
-- **Rings**: SubmitRing, CompleteRing, EventRing, UpcallRing — producer/consumer
-  queues for structured communication
-- **Doorbells**: Lightweight signaling (hvsocket notification or HvCallSignalEvent)
-  to wake the consumer when data is available
+These requirements will be refined as prototyping begins.
 
-Portal enforces: no raw pointers cross any boundary. All cross-boundary
-references are PortalSpans with bounds checking and generation numbers to prevent
-use-after-free.
-
-### 3.4 Multi-VM Portal
+### 3.3 Multi-VM shared memory
 
 For architectures with multiple VMs, the same host backing file can be mapped as
 a virtio-pmem device into multiple partitions. Both VMs see the same memory.
@@ -231,15 +301,18 @@ Hyper-V (Windows host) has no built-in ivshmem equivalent. The virtio-pmem
 approach via OpenVMM is the practical workaround, with the option of extending
 OpenVMM to add ivshmem-like semantics. Alternatively, `WHvMapGpaRange` can map
 the same host buffer into multiple WHP partitions — true shared memory, but
-requiring a custom VMM path.
+requiring custom VMM-level integration.
 
-### 3.5 Performance envelope (expected)
+### 3.4 Hypothesized performance envelope (requires measurement)
 
-| Operation | Mechanism | Latency |
+All numbers are provisional targets/estimates. They must be benchmarked on each
+backend and configuration before being treated as commitments.
+
+| Operation | Mechanism | Target Latency |
 |---|---|---|
-| Small RPC (< 4KB) | HV socket control plane | 10-50 us |
-| Bulk data transfer | Portal DAX (memcpy speed) | GB/s |
-| Ring doorbell | HV socket or HvCallSignalEvent | < 10 us |
+| Small RPC (< 4KB) | Control-plane channel (hvsocket/vsock) | 10-50 us |
+| Bulk data transfer | DAX shared memory (memcpy speed) | GB/s throughput |
+| Ring doorbell | Backend-appropriate signaling | < 10 us |
 | Inter-VM shared memory (KVM) | ivshmem | < 1 us |
 | Inter-VM shared memory (WHP) | virtio-pmem shared file | < 1 us (memory bus) |
 
@@ -247,15 +320,16 @@ requiring a custom VMM path.
 
 ## 4. VM Profiles
 
-NXIA R3 does not assume a single VM. The VMM layer supports multiple
+NXIA R3 does not assume a single VM. The VMM layer can support multiple
 concurrently running VMs with different characteristics:
 
 ### System VM (default)
 
 The shared substrate. Always running while the platform is active. Hosts
 platform services, persistence engines, and the primary workload environment.
-Multiple "distros" or workload namespaces can coexist within it (the WSL model:
-shared kernel, per-namespace root filesystems).
+Multiple "distros" or workload namespaces can coexist within it (shared kernel,
+per-namespace root filesystems — a pattern proven by WSL2's existing
+architecture).
 
 ### Isolated VMs
 
@@ -264,26 +338,28 @@ Per-workload or per-project VMs providing stronger isolation than namespaces:
 - Separate kernel instance (can load different modules, run different policies)
 - Independent snapshot/restore lifecycle
 - Dedicated resource allocation (memory, CPU)
-- Connected to the System VM via Portal shared-memory regions
+- Connected to the System VM via shared memory regions
 
 Use cases: untrusted code execution, multi-tenant isolation, security-sensitive
 workloads.
 
-### Micro-VMs (Hyperlight-class)
+### Micro-VMs (exploration item)
 
-Sub-millisecond cold-start function sandboxes for ephemeral execution:
-
-- **No device model, no OS, single vCPU, < 1 GB memory**
-- Custom `no_std` Rust/C binaries or WebAssembly (via Hyperlight-Wasm)
-- Can share Portal memory regions with the System VM
-- Hardware-isolated (real VM, not just a sandbox)
-
-Use cases: Sandboxed build steps, plugin evaluation, untrusted function
-execution, AI tool-call sandboxing.
+Sub-millisecond cold-start function sandboxes for ephemeral execution. This is
+an area to evaluate, not an assumed capability.
 
 Hyperlight (Microsoft's open-source Rust micro-VMM library, CNCF Sandbox
-project) provides this capability. It uses the same hypervisor backends as
-OpenVMM (WHP, KVM, MSHV) but with radically reduced overhead.
+project) is a candidate for this role. It provides hardware-isolated micro-VMs
+with no device model, no OS, single vCPU, and < 1 GB memory. Hyperlight and
+OpenVMM overlap on host virtualization backends (WHP on Windows, KVM on Linux)
+but are architecturally distinct.
+
+**Open question**: Can Hyperlight-class micro-VMs participate in shared memory
+regions (e.g., host-backed mappings accessible to both the System VM and
+micro-VMs)? This requires evaluation under each backend and is not assumed.
+
+Use cases if viable: sandboxed build steps, plugin evaluation, untrusted
+function execution, AI tool-call sandboxing.
 
 ### Performance-Profile VMs
 
@@ -299,103 +375,111 @@ manages all of them.
 
 ---
 
-## 5. Gemini: Cross-OS Execution Fabric
+## 5. Cross-OS Execution
+
+> The concepts in this section are evolving. "Gemini" refers to the abstract
+> capability of bidirectional cross-OS execution bridging. The specific protocol,
+> transport, and marshalling design are not specified here.
 
 ### 5.1 The problem
 
-The System VM runs Linux. The host runs Windows (or macOS, or Linux). Users
-expect native-feeling applications. Gemini bridges this gap.
+The System VM runs Linux. The host may run Windows, macOS, or Linux. Users
+expect applications that appear native on the host while leveraging the System
+VM substrate. A cross-OS execution fabric bridges this gap.
 
 ### 5.2 Two directions
 
-**L→W (Linux calls Windows):** A process in the System VM invokes a Windows API
-(Win32, COM, .NET, etc.). Gemini routes the call to a paired executor process
-on the Windows host, which performs the real API call and returns results.
+**L→H (Linux calls Host):** A process in the System VM invokes a host-native API
+(Win32, COM, Cocoa, etc.). The fabric routes the call to a paired executor
+process on the host, which performs the real API call and returns results.
 
-**W→L (Windows calls Linux):** A Windows process invokes a Linux API (POSIX,
-syscalls, Linux services). Gemini routes the call to a paired executor process
-in the System VM.
+**H→L (Host calls Linux):** A host process invokes a Linux API or platform
+service. The fabric routes the call into the System VM.
 
-Both directions share the same machinery: sessions, RPC protocol, Portal
-data plane, capability tokens.
+### 5.3 Design principles (abstract)
 
-### 5.3 Key design principles
-
-- **Capability tokens, not raw handles**: Remote HANDLE/fd/object pointers are
-  never exposed directly. Cross-boundary references use opaque tokens with
-  rights bitmasks and lifetime management.
+- **Capability tokens, not raw handles**: Cross-boundary references use opaque
+  tokens with rights bitmasks and lifetime management.
 - **Policy-gated**: All cross-boundary calls pass through a policy module.
-  Catastrophic operations are denied by default. Logging and auditing are
-  mandatory even in development mode.
-- **Portal-backed marshalling**: Large arguments (buffers, strings, structs)
-  are placed in Portal regions and referenced by PortalSpan. Only the span
-  descriptor crosses the RPC boundary — the data stays in shared memory.
-- **Paired process model**: One host-side executor per guest-side caller
-  (default). Lifetime is coupled: if one dies, the other is cleaned up.
-  Multiplexing is a later optimization.
+  Catastrophic operations denied by default.
+- **Shared-memory-backed marshalling**: Large arguments live in shared memory
+  regions. Only lightweight descriptors cross the RPC boundary.
+- **Paired lifetime management**: If one side of a cross-boundary session dies,
+  the other is cleaned up.
 
-### 5.4 .NET as first-class runtime integration target
+### 5.4 dotnext: .NET as first runtime integration target
 
-Gemini's Runtime Layer makes foreign APIs feel native in .NET:
+**dotnext** is a fork of the .NET runtime, extended to support NXIA platform
+features. In the context of cross-OS execution:
 
-- **Linux .NET → Windows APIs**: `DllImport("kernel32.dll")` on Linux routes
-  through Gemini to the Windows host. A managed resolver remaps Win32 module
-  names to Gemini shim libraries.
-- **Windows .NET → Linux APIs**: `DllImport("libc.so.6")` on Windows routes
-  through Gemini to the System VM.
-- **Portal-backed marshalling helpers** for large buffer P/Invoke patterns.
+- **Linux .NET → Windows APIs**: P/Invoke calls targeting Windows DLLs route
+  through the execution fabric to the Windows host.
+- **Windows .NET → Linux APIs**: P/Invoke calls targeting Linux shared objects
+  route through the execution fabric to the System VM.
+- **Shared-memory-backed marshalling** for large buffer patterns.
 
-This is a research direction, not a delivered feature.
+dotnext demonstrates "runtime over meta-runtime" composition: a higher-level
+runtime that targets the NXIA platform rather than individual host OSes.
 
 ---
 
-## 6. WARP: Arbitrary Runtime Platform
+## 6. Kernel Customization
 
-### 6.1 Beyond Linux
+### 6.1 What NXIA needs from the kernel
 
-Once the VMM layer is under our control, "must be Linux" dissolves. WARP defines
-the minimum invariants a guest kernel must satisfy to participate in the NXIA
-platform:
+The System VM kernel is not just "any Linux kernel." NXIA R3 requires (or
+benefits from) specific kernel capabilities:
 
-1. **Bootable** via the VMM's boot pathway (Linux direct boot, UEFI, or custom)
-2. **Control plane**: Bidirectional protocol channel for lifecycle, process
-   launch, I/O relay (AgentX protocol)
-3. **Storage**: Ability to mount a per-workload image as root filesystem
-4. **Optional integrations**: Networking, filesystem sharing, GPU, GUI — each
-   as a modular contract
+**Required:**
+- Dual-stack device support: VMBus synthetic devices AND virtio devices
+  (so the same kernel boots under different VMM configurations)
+- virtio-pmem + DAX support (for shared memory)
+- Namespace/cgroup infrastructure (for intra-VM isolation)
+- hvsocket/vsock transport (for control plane and cross-OS execution)
 
-### 6.2 Two tracks
+**Desired:**
+- Custom LSM modules for capability-based security
+- eBPF infrastructure for platform-level observability and policy enforcement
+- Custom scheduler classes for platform-aware workload management
+- Checkpoint/restore support (CONFIG_CHECKPOINT_RESTORE) for process-level
+  snapshots
 
-**Track A — Linux-personality**: Preserve the Linux userspace ABI (syscalls,
-VFS, process model) while making deep kernel modifications internally. Existing
-distros (Ubuntu, Debian, etc.) run unmodified. The kernel is "not stock Linux"
-but is "Linux-compatible" at the ABI boundary.
+**To evaluate:**
+- Whether kernel modifications are needed beyond configuration and modules,
+  or whether the above can be achieved with an upstream LTS kernel + modules
+- Whether a custom fork yields enough benefit over the maintenance cost
+- Whether the WSL kernel's existing configuration already satisfies most
+  requirements (early evidence suggests yes, but must be verified)
 
-**Track B — New-OS**: A non-Linux kernel with its own ABI and userland. Maximum
-architectural freedom. Must implement WARP's minimum invariants (AgentX, control
-plane, storage). This makes NXIA a Windows-integrated (and Linux-integrated)
-micro-VM OS runtime, not just a Linux subsystem.
+### 6.2 Relationship to the WSL kernel
 
-### 6.3 OpenHCL as a boot shim (Track B enabler)
+The WSL Linux kernel (Microsoft's fork, currently 6.6.x LTS) is a strong
+candidate starting point:
 
-For Track B kernels that don't implement Hyper-V enlightenments natively,
-OpenHCL (Microsoft's open-source Rust paravisor) can serve as a boot shim: it
-sets up GDT, page tables, and Linux Boot Protocol requirements before jumping
-to the kernel. OpenHCL was designed as a VTL2 paravisor for Azure confidential
-computing, but its boot machinery is reusable as a standalone shim.
+- Already configured with dual-stack drivers (VMBus + virtio)
+- Already has virtio-pmem, DAX, virtiofs support compiled in
+- Optimized for Hyper-V enlightenments (fast boot, synthetic devices)
+- Actively maintained by Microsoft
 
-### 6.4 The distro model
+However, NXIA R3 is not bound to the WSL kernel. An upstream LTS kernel with
+equivalent configuration is a viable alternative. The choice depends on:
+- Maintenance burden (tracking WSL fork vs. upstream + patches)
+- WSL-specific modifications that may or may not benefit NXIA
+- Long-term independence from Microsoft's WSL release cadence
 
-Regardless of track, NXIA uses a "kernel + image" distribution model inspired
-by (but not limited to) WSL's approach:
+### 6.3 Previous WARP research (historical context)
 
-- **KernelX**: The guest kernel (shared across workloads, or per-workload)
-- **ImageX**: The root filesystem + manifest (distro in Track A, OS image in
-  Track B)
-- **AgentX**: The init/control agent inside the guest
+Earlier research under the name "WARP" (WSLX Arbitrary Runtime Platform)
+explored repurposing the WSL/HCS pipeline to boot non-WSL kernels — including
+hypothetical non-Linux OS personalities. In NXIA R3's direction, where we
+control the VMM layer via OpenVMM, WARP's original problem ("hack HCS into
+running other things") dissolves — the ability to boot and configure arbitrary
+kernels is inherent to owning the VMM.
 
-ImageX packaging reuses the filesystem-plus-manifest pattern (similar to WSL's
-`.wsl` format) regardless of whether the contents are Linux or a new OS.
+The useful kernel-customization concepts from WARP are folded into this
+section. The "Track B" concept (entirely new non-Linux OS personality) remains
+an interesting long-term research direction but is not part of the near-term
+architecture.
 
 ---
 
@@ -407,7 +491,7 @@ CRIU-class checkpoint/restore of individual processes or process trees within
 the System VM. Captures: CPU registers, address space, open FDs, pipes, epoll
 state, and (best-effort) network sockets.
 
-Known challenges in a VM environment:
+Known challenges:
 - seccomp filter inheritance from init
 - ptrace permission restrictions
 - hvsocket/vsock endpoint restoration requires host-side cooperation
@@ -421,27 +505,26 @@ host-side quiesce coordination.
 Full hypervisor checkpoint: guest RAM + vCPU state + virtual device state.
 Restore means "resume the entire machine exactly where it was."
 
-The VMM layer (OpenVMM) has state serialization for all devices. The key
-question is whether quiesced save/restore works for the specific VM configuration
-NXIA uses (utility-VM-style with Portal regions, hvsocket channels, and
-potentially GPU state).
+OpenVMM includes state serialization for devices. The key question is whether
+quiesced save/restore works for the specific VM configuration NXIA uses. This
+must be tested experimentally.
 
-Portal state survives snapshot/restore naturally — it's backed by a host file.
-The host-side mapping persists across VM restart. The guest re-maps on resume.
+Shared memory state backed by host files survives snapshot/restore naturally —
+the host-side mapping persists across VM restart.
 
-### 7.3 Quiesce protocol
+### 7.3 Quiesce protocol (conceptual)
 
 Before snapshot:
-1. AgentX receives QUIESCE command from Stratum 1
-2. Drain in-flight Portal operations
-3. Flush virtio-pmem regions (`VIRTIO_PMEM_REQ_TYPE_FLUSH`)
-4. Send QUIESCE_COMPLETE
+1. Control agent receives QUIESCE command from Stratum 1
+2. Drain in-flight shared memory operations
+3. Flush virtio-pmem regions for durability
+4. Signal QUIESCE_COMPLETE
 5. VM snapshot occurs
 
 After restore:
-1. AgentX receives RESUME command
-2. Re-establish hvsocket channels
-3. Resume Portal producers/consumers
+1. Control agent receives RESUME command
+2. Re-establish host communication channels
+3. Resume shared memory producers/consumers
 4. Normal operation continues
 
 ---
@@ -451,9 +534,10 @@ After restore:
 ### 8.1 Trust boundaries
 
 - **Stratum 1 (host)** is the primary authority for host-OS policy
-- **Stratum 2 (VMM)** enforces memory isolation, device access, and VM boundaries
-- **Stratum 3 (System VM)** is the primary authority for platform policy within
-  the guest (LSM, seccomp, namespaces, capability manifests)
+- **Stratum 2 (VMM)** enforces memory isolation, device access, and VM
+  boundaries
+- **Stratum 3 (System VM)** is the primary authority for platform policy
+  within the guest (LSM, seccomp, namespaces, capability manifests)
 - Guest calls to the host are "remote" even on the same machine — subject to
   policy and capability checks
 
@@ -465,15 +549,14 @@ The platform moves toward capability-based security:
   capability manifests
 - Manifests are enforced by kernel mechanisms in the System VM (LSM modules,
   eBPF programs, namespace/cgroup policies)
-- The host side enforces its own policy at the Gemini boundary (denylist
-  catastrophic operations, rate limiting, audit logging)
+- The host side enforces its own policy at the cross-OS execution boundary
 - Capability tokens (not raw handles) cross all boundaries
 
 ### 8.3 Signed artifacts
 
-- KernelX and ImageX should be signed
-- AgentX control-plane protocol is versioned and authenticated
-- Portal regions are capability-scoped (not ambient-access)
+- Kernel images and filesystem images should be signed
+- Control-plane protocols are versioned and authenticated
+- Shared memory regions are capability-scoped (not ambient-access)
 - Snapshot artifacts are encrypted at rest
 
 ---
@@ -482,78 +565,130 @@ The platform moves toward capability-based security:
 
 ### 9.1 What's shared vs. platform-specific
 
-| Component | Shared (Rust, ~80%) | Platform-specific (~20%) |
+The goal is ~80% shared Rust code across all host platforms, with
+platform-specific code limited to host integration.
+
+| Component | Shared | Platform-specific |
 |---|---|---|
-| VMM core (OpenVMM crates) | All device emulation, VMBus, virtio, hv1 emulator | Hypervisor backend selection (WHP/KVM/HVF) |
-| Portal | Arena allocator, ring structures, span validation | Host-side file mapping API (CreateFileMapping vs mmap) |
-| Gemini | RPC protocol, capability tokens, session management | Transport adapter (hvsocket vs vsock) |
-| AgentX | Control protocol, quiesce/resume, process factory | Nothing (runs inside the VM) |
+| VMM core (OpenVMM-class crates) | Device emulation, VMBus, virtio, enlightenment emulator | Backend selection (WHP/KVM/HVF) |
+| Shared memory | Arena allocator, ring structures, span validation | Host-side file mapping API |
+| Cross-OS execution | Protocol, capability tokens, session management | Transport adapter (hvsocket vs vsock) |
+| Control agent | Protocol, quiesce/resume, process factory | Nothing (runs inside the VM) |
 | System VM kernel | Everything (identical kernel image) | Nothing (same binary on all hosts) |
-| Host integration | — | Networking (WinNAT vs iptables), filesystem mounts, GPU, shell integration |
+| Host integration | — | Networking, filesystem mounts, GPU, shell integration |
 
 ### 9.2 Linux host advantages
 
 On a Linux host, KVM provides capabilities that WHP (Windows) lacks:
 
-- **ivshmem**: Direct inter-VM shared memory via PCI BAR — no VMBus proxy, no
-  RDMA hardware required. Sub-microsecond latency, true zero-copy. This is
-  the most performant multi-VM shared memory option available on any hypervisor.
-- **vhost-user**: User-space device backends with zero-copy. Guest virtio-net
-  packets go directly to a host user-space process.
-- **Nested virtualization**: Run NXIA inside a cloud VM.
-- **Mature VFIO GPU passthrough**: More flexible than Hyper-V GPU-P for some
-  scenarios.
+- **ivshmem**: Direct inter-VM shared memory via PCI BAR — the most performant
+  multi-VM shared memory option available on any mainstream hypervisor
+- **vhost-user**: User-space device backends with zero-copy
+- **Nested virtualization**: Run NXIA inside a cloud VM
+- **Mature VFIO GPU passthrough**: More flexible than Hyper-V GPU-P
 
-For distributed kernel research (multi-VM shared memory experiments), **a Linux
-host with KVM is the most capable platform**, not the least.
+For distributed and multi-VM research, **a Linux host with KVM is the most
+capable platform**.
 
 ### 9.3 Windows host advantages
 
-- **Windows is where the users are** (developer workstations)
-- **WSL ecosystem validation**: The WSL Linux kernel is proven to work under the
-  Windows hypervisor with full device support. WSLX demonstrates that a
-  differentiated fork can run side-by-side with canonical WSL.
-- **Native Windows UI integration**: Gemini L→W calls can invoke Win32/COM/WPF
-  for native-feeling applications
-- **dxgkrnl GPU passthrough**: WSL2's GPU integration, while complex to
-  replicate outside HCS, provides a model for GPU compute in the System VM
+- **Where the users are** (developer workstations, enterprise)
+- **WSL ecosystem validation**: Proven kernel + hypervisor + device stack. WSLX
+  demonstrates a differentiated fork running side-by-side with canonical WSL.
+- **Native Windows UI integration**: Cross-OS execution can invoke
+  Win32/COM/WPF for native-feeling applications
+- **dxgkrnl GPU passthrough**: A model (complex to replicate outside HCS) for
+  GPU compute in the System VM
+
+### 9.4 Linux deployment modes
+
+NXIA R3 targets Linux as a host in two distinct modes:
+
+**Mode 1: Regular distro, stock kernel**
+
+NXIA installs on an existing Linux distribution (Ubuntu, Fedora, etc.) running
+its own bare-metal kernel. No host kernel modification required beyond loading
+standard modules (KVM, etc.). The System VM runs inside KVM on the host.
+
+This mode is straightforward: the host is a standard Linux machine, and NXIA
+is "just an application" (with a VMM) running on it.
+
+**Mode 2: NXIA's own Linux-based distro**
+
+An NXIA-branded Linux distribution where the bare-metal host kernel could
+potentially be our customized kernel — the same one (or a variant) that runs
+inside the System VM on other platforms.
+
+Open questions requiring evaluation:
+- **Technical feasibility**: Can our System VM kernel also serve as a bare-metal
+  host kernel? What configuration differences are needed?
+- **Technical viability**: Does running our kernel bare-metal provide meaningful
+  advantages (deeper host integration, bypass the VM layer for some workloads,
+  native shared-memory without virtio-pmem)?
+- **Maintenance complexity**: Does maintaining a bare-metal variant of the kernel
+  create an unsustainable maintenance burden vs. using an upstream LTS kernel
+  for the host and our customized kernel only inside VMs?
+
+This is a research question, not a decided direction.
 
 ---
 
-## 10. Relationship to Existing Research
+## 10. Relationship to Existing Research and Projects
 
 ### WSLX
 
 WSLX is a fully differentiated WSL fork, independently distributable, running
 in parallel to canonical WSL on Windows. It provides:
 - Evidence that the WSL kernel and distro model work as building blocks
-- A proving ground for Portal, Gemini, and WARP concepts
-- Confirmation that the WSL kernel's dual-stack drivers (VMBus + virtio) enable
-  booting under both HCS and custom VMMs
+- A proving ground for shared memory and cross-OS execution concepts
+- Confirmation that the WSL kernel's dual-stack drivers enable booting under
+  both HCS and OpenVMM-class VMMs
 
-NXIA R3 generalizes beyond WSLX. Where WSLX is Windows-specific and WSL-derived,
-NXIA R3 is cross-platform and VMM-native. WSLX may continue as one deployment
-mode (the Windows-native, HCS-compatible path), while the OpenVMM-based path
-becomes the primary architecture.
+NXIA R3 generalizes beyond WSLX. Where WSLX is Windows-specific and
+WSL-derived, NXIA R3 is cross-platform and VMM-native.
+
+### dotnext
+
+A fork of the .NET runtime, extended to support NXIA platform features. The
+first planned port of an existing runtime to the meta-runtime. Demonstrates
+"runtime over meta-runtime" composition.
 
 ### VAYRON
 
-VAYRON is the experimental runtime integration path — especially .NET/C# runtime
-and toolchain experiments. In NXIA R3 terms, VAYRON is a higher-level runtime
-that targets the meta-runtime. It demonstrates "runtime over meta-runtime"
-composition: VAYRON speaks Portal, adopts NXIA semantics, and delivers
-applications that use both Windows and Linux APIs via Gemini.
+The broader experimental runtime integration path. In NXIA R3 terms, VAYRON
+represents the layer where higher-level runtimes, toolchains, and application
+frameworks target the meta-runtime. dotnext is the first concrete instance.
+
+### OpenVMM / OpenHCL
+
+OpenVMM is the candidate VMM substrate. OpenHCL is a related paravisor project.
+
+**OpenHCL is a candidate layer to evaluate, not an assumed component.** It may
+provide useful properties (boot shimming, isolation tiers, measurement hooks,
+security attestation), but its applicability and required adaptations must be
+validated experimentally. Open questions:
+- What value does OpenHCL add in this architecture beyond boot shimming?
+- What adaptation/completion work would be needed?
+- What experiments would validate its utility (boot flow, device model
+  interactions, performance overhead, snapshot/restore interplay)?
+
+### Hyperlight
+
+Hyperlight is a candidate for micro-VM function sandboxes (see Section 4).
+It overlaps with OpenVMM on host virtualization backends but is architecturally
+distinct (no device model, no OS support, sub-millisecond cold start). Its
+participation in NXIA's shared memory fabric requires evaluation.
 
 ---
 
-## 11. What "NXIA-Class" Means (Feasibility Definition)
+## 11. What "NXIA-Class" Means
 
 > An **NXIA-class architecture** is one where policy, identity, memory
 > semantics, persistence/search, and orchestration are OS-grade services with
 > stable ABIs, and where language runtimes compile intent into those services
 > rather than reimplementing them per application.
 
-This is not about magical performance. It is about:
+This means:
 
 - **Semantic gravity moving downward**: Platform concerns (security, persistence,
   distribution, search) become kernel/service-grade, not application-grade.
@@ -564,7 +699,7 @@ This is not about magical performance. It is about:
 - **Enforcement at the kernel boundary**: The System VM kernel is the
   enforcement root, not the host OS or the application.
 - **Portable system behavior**: The System VM provides identical semantics
-  on Windows, Linux, and (eventually) macOS hosts.
+  on every supported host OS.
 
 ---
 
@@ -573,37 +708,35 @@ This is not about magical performance. It is about:
 ### Adoption-critical
 
 1. **Developer experience**: Filesystem performance (cross-boundary access via
-   9P/virtiofs is slower than native), IDE integration, debugger attachment
-   across VM boundary, startup latency
+   virtiofs/9P is slower than native), IDE integration, debugger attachment
+   across VM boundary, startup latency.
 2. **GPU and graphics**: Host GPU integration is the hardest missing piece for
-   native-feeling applications. dxgkrnl relay outside HCS is complex; VFIO
-   on Linux is different. This may be the long pole.
-3. **Networking and identity**: Replacing HCN means implementing our own NAT,
-   DNS, and port forwarding. Host identity bridging (Windows tokens ↔ Linux
-   uid) requires careful design.
+   native-feeling applications. This may be the long pole.
+3. **Networking and identity**: Building our own networking stack (NAT, DNS,
+   port forwarding) and host identity bridging requires careful design.
 
 ### Architectural
 
-4. **Shared-memory correctness**: Portal regions must be capability-scoped,
-   observable, and resilient under failure. Generation numbers and bounds
-   checking are necessary but not sufficient — the concurrency model matters.
+4. **Shared-memory correctness**: Shared regions must be capability-scoped,
+   observable, and resilient under failure. The concurrency model matters as
+   much as the memory layout.
 5. **Snapshot complexity**: Network socket state, GPU state, and host-integration
    channel state may not survive checkpoint/restore. Must design for graceful
    degradation.
-6. **VMM maturity**: OpenVMM docs note it is "a development platform, not a
-   ready-to-deploy application." Stabilization work is required.
+6. **VMM maturity**: OpenVMM is described as a development platform, not a
+   ready-to-deploy application. Maturity varies by backend and device surface.
+   Stabilization work is expected.
 
 ### Strategic
 
-7. **"Windows hostility resistance"**: If the host OS breaks a convenience or
-   integration surface, the platform should survive because the System VM holds
-   the important state and logic. Stratum 1 should be thin enough that it can be
-   repaired or rewritten without affecting the rest. This must be validated, not
-   assumed.
+7. **Host resilience**: The platform should survive host-OS changes because the
+   System VM holds the important state and logic. Stratum 1 should be thin
+   enough that it can be repaired or rewritten without affecting the rest. This
+   must be validated, not assumed.
 8. **Virtualization overhead**: The thesis accepts a "modest" penalty. This must
-   be quantified. If Portal + DAX provides memcpy-speed bulk transfer and
-   < 50 us RPC, the overhead is manageable. If filesystem access via virtiofs
-   adds 5x latency to every file operation, developer experience suffers.
+   be quantified. If shared memory provides memcpy-speed bulk transfer and
+   low-microsecond signaling, the overhead is manageable. If cross-boundary
+   filesystem access adds unacceptable latency, developer experience suffers.
 
 ---
 
@@ -613,58 +746,58 @@ This is not about magical performance. It is about:
 
 Boot a Linux kernel on an OpenVMM-class launcher on both Windows (WHP) and
 Linux (KVM). Establish VM lifecycle, serial console, basic block device for
-root filesystem. Validate that the kernel's dual-stack drivers (VMBus + virtio)
-enumerate correctly under OpenVMM.
+root filesystem. Validate that the kernel boots and enumerates devices correctly
+under OpenVMM.
+
+**Verification tasks:**
+- Confirm hv1 emulator capabilities on KVM path
+- Confirm which enlightenments are required by the chosen kernel
+- Confirm behavior parity between WHP and KVM backends
 
 ### Phase B: Control Plane and Process Factory
 
-Implement the AgentX protocol: HELLO, CONFIG, MOUNT, EXEC, STDIO, SIGNAL,
-SHUTDOWN. Get a working shell. Run a distro. This is the "custom WSL without
-HCS" milestone.
+Implement a control agent protocol: lifecycle commands, process factory,
+I/O relay. Get a working shell. Run a distro.
 
-### Phase C: Portal MVP
+### Phase C: Shared Memory MVP
 
-Configure virtio-pmem in OpenVMM. Map a host file as `/dev/pmem0` with DAX in
-the guest. Implement PortalArena, PortalSpan, and ring structures. Benchmark:
-raw throughput (memcpy), ring operation latency, doorbell latency.
+Configure virtio-pmem in OpenVMM. Map a host file with DAX in the guest.
+Implement arena allocation and ring structures. Benchmark: raw throughput,
+ring operation latency, signaling latency.
 
-### Phase D: Gemini Control Plane
+### Phase D: Cross-OS Execution Control Plane
 
-Establish hvsocket/vsock sessions between host and System VM. Implement
-CALL/RETURN with copy-marshalling. Implement paired executor spawn on both sides.
-Demonstrate L→W (file I/O from Linux calling Win32) and W→L (file I/O from
-Windows calling POSIX).
+Establish host↔guest sessions. Implement CALL/RETURN with copy-marshalling.
+Demonstrate bidirectional execution (Linux calling Host, Host calling Linux).
 
-### Phase E: Portal Data Plane Integration
+### Phase E: Shared Memory Data Plane Integration
 
-Connect Gemini to Portal: CALL/RETURN descriptors reference PortalSpans instead
-of copying arguments. Measure the improvement. This is where the architecture
-starts to pay off.
+Connect cross-OS execution to the shared memory fabric: call descriptors
+reference shared memory regions instead of copying arguments. Measure the
+improvement.
 
 ### Phase F: Cross-Platform Validation
 
 CI pipeline building and testing on both Windows and Linux. Same VMM binary,
-same kernel, same AgentX, same Portal. Document platform-specific delta.
+same kernel, same control agent, same shared memory. Document platform delta.
 
 ### Phase G: Multi-VM and Distributed Research
 
-Launch multiple VMs from the same VMM process. Shared Portal regions via
-virtio-pmem (both platforms) and ivshmem (KVM). Prototype inter-VM signaling.
-Explore distributed shared memory semantics. Evaluate whether this is a viable
-path toward multi-node runtimes.
+Launch multiple VMs from the same VMM process. Shared memory regions across
+VMs. Prototype inter-VM signaling. Evaluate ivshmem on KVM. Explore
+distributed shared memory semantics.
 
-### Phase H: Micro-VM Integration
+### Phase H: Micro-VM Evaluation
 
-Integrate Hyperlight-class micro-VMs as a sidecar capability. Shared Portal
-memory between System VM and micro-VMs. Demonstrate: System VM dispatches a
-function to a Hyperlight micro-VM, passes arguments via Portal, gets results
-back in < 2ms total.
+Evaluate Hyperlight-class micro-VMs as a sidecar capability. Test whether
+shared memory regions can be mapped into both the System VM and micro-VMs.
+Benchmark end-to-end function dispatch latency.
 
 ### Phase I: Snapshot MVP
 
-Process-level: CRIU-based checkpoint/restore within the System VM (no-network
-profile). VM-level: probe OpenVMM's state serialization for full VM save/restore.
-Implement quiesce protocol. Test Portal state persistence across snapshot.
+Process-level: CRIU-based checkpoint/restore within the System VM (minimal
+profile). VM-level: probe OpenVMM's state serialization. Test shared memory
+state persistence across snapshot/restore cycles.
 
 ---
 
@@ -677,9 +810,8 @@ NXIA R3 is a meta-runtime architecture built on three strata:
    controlled virtualization
 3. **A Linux-kernel-based System VM** as the stable semantic substrate
 
-With **Portal** (shared-memory-first IPC), **Gemini** (cross-OS execution
-fabric), **WARP** (arbitrary guest kernel support), and **Snapshots**
-(state capture/restore) as the core enabling primitives.
+With shared-memory-first communication, cross-OS execution bridging,
+VM-level snapshots, and multi-VM topologies as core enabling primitives.
 
 The thesis: this model can become a foundation for next-generation isolation,
 universal distributivity, runtime composability, and cross-OS portability with
@@ -696,8 +828,9 @@ The only way to know if it works is to build Phase A and measure.
 ### NXIA R3 Research Lineage
 - `doc/research/Gemini + Portal/intro WSLX NXIA.md` — Original NXIA concept
 - `doc/research/Gemini + Portal/seminal - Gemini + Portal.md` — Portal and
-  Gemini detailed design
+  Gemini early design exploration
 - `doc/research/WARP/seminal - WSLX WARP.md` — WARP arbitrary runtime platform
+  (historical; folded into Section 6.3)
 - `doc/research/Process and VM Snapshots.md/seminal - Process and VM Snapshots.md`
   — Snapshot R&D agenda
 - `doc/research/Hyper-V Virtualization Primitives for WSLX.md` — virtio-pmem,
